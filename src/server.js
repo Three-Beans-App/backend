@@ -1,10 +1,11 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 
-// Allow POST requests to have JSON body content
 app.use(express.json());
+app.use(cors());
 
-// Home route
+
 app.get("/", (request, response) => {
 
     response.json({
@@ -12,16 +13,16 @@ app.get("/", (request, response) => {
     });
 });
 
-// Error handling 404
+
 app.get("*", (request, response, next) => {
     response.status(404).json({
         message:"404 Page not found"
     });
 });
 
-// Error handling 
+
 app.use((error, request, response, next) => {
-    response.json({
+    response.status(error.status || 500).json({
         message:"Error Occured!",
         error: error.message
     });
