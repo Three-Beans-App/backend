@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { UserModel } = require('./UserModel.js');
 const { ItemModel } = require('./ItemModel.js');
 
-const orderItemSchema = mongoose.Schema({
+const orderItemSchema = new mongoose.Schema({
     itemId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Item',
@@ -65,6 +65,6 @@ const orderSchema = new mongoose.Schema({
 
 const OrderModel = mongoose.model('Order', orderSchema);
 
-module.export = {
+module.exports = {
     OrderModel
 }
