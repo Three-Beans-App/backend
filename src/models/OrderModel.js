@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { UserModel } = require('./UserModel.js');
-const { ItemModel } = require('./ItemModel.js');
+const { ItemModel, CategoryModel, InventoryModel } = require('./ItemModel.js');
 
 const orderItemSchema = new mongoose.Schema({
     itemId: {
@@ -13,7 +13,8 @@ const orderItemSchema = new mongoose.Schema({
         required: true,
     },
     category: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
         required: true,
     },
     quantity: {
@@ -30,15 +31,18 @@ const orderItemSchema = new mongoose.Schema({
     },
     customizations: {
         size: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Inventory',
             required: false
         },
         milk: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Inventory',
             required: false
         },
         sugar: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Inventory',
             required: false
         }
     }
