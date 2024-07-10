@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
-const itemSchema = mongoose.Schema({
+
+const itemSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -15,6 +16,10 @@ const itemSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    quantity: {
+        type: Number,
+        required: true
+    },
     description: {
         type: String,
         required: false
@@ -25,8 +30,29 @@ const itemSchema = mongoose.Schema({
     }
 });
 
+
+const inventorySchema = new mongoose.Schema({
+    category: {
+        type: String,
+        enum: ["milk", "sugar", "size"],
+        equired: true
+    },
+    name: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    quantity: {
+        type: Number,
+        required: true
+    }
+})
+
+
 const ItemModel = mongoose.model("Item", itemSchema);
+const InventoryModel = mongoose.model("Inventory", inventorySchema);
 
 module.exports = {
-    ItemModel
+    ItemModel,
+    InventoryModel
 }
