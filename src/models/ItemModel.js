@@ -1,6 +1,17 @@
 const mongoose = require('mongoose');
 
 
+const categorySchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        unique: true
+    }
+});
+
+const CategoryModel = mongoose.model('Category', categorySchema);
+
+
 const itemSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -8,8 +19,8 @@ const itemSchema = new mongoose.Schema({
         unique: true
     },
     category: {
-        type: String,
-        enum: ["coffee", "tea", "milkshake", "food"],
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
         required: true 
     },
     price: {
@@ -54,5 +65,6 @@ const InventoryModel = mongoose.model("Inventory", inventorySchema);
 
 module.exports = {
     ItemModel,
-    InventoryModel
+    InventoryModel,
+    CategoryModel
 }
