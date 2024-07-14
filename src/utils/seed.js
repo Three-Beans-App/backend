@@ -12,12 +12,24 @@ async function seedUsers () {
             password: "12345",
             birthday: "06/07/1996",
             admin: true
+        },
+        {
+            name: "Sarah",
+            email: "sarah@email.com",
+            password: "12345",
+            birthday: "11/04/1999",
+        },
+        {
+            name: "Tim",
+            email: "tim@email.com",
+            password: "12345",
+            birthday: "24/08/1992"
         }
     ];
 
     console.log("Seeding users...")
     try {
-        let result = await UserModel.create(users);
+        let result = await UserModel.insertMany(users);
         console.log([...result]);
         return [...result];
     } catch (error) {
