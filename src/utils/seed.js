@@ -4,8 +4,8 @@ const { createJwt, validateJwt } = require('./auth');
 const { databaseConnect, databaseClear, databaseClose } = require('./database');
 
 
-async function seedUsers () {
-    let users = [
+async function seedUsers() {
+    const users = [
         {
             name: "Brett",
             email: "brett@email.com",
@@ -37,7 +37,7 @@ async function seedUsers () {
     }
 }
 
-async function seedCategories () {
+async function seedCategories() {
     const categories = [
         { name: "coffee"},
         { name: "tea" },
@@ -55,7 +55,7 @@ async function seedCategories () {
     }
 }
 
-async function seedItems () {
+async function seedItems() {
     try {
         const coffee = await CategoryModel.findOne({ name: "coffee" });
         const tea = await CategoryModel.findOne({ name: "tea"});
@@ -102,6 +102,80 @@ async function seedItems () {
     }
 }
 
+async function seedInventory() {
+    const inventory = [
+        {
+            category: "milk",
+            name: "Whole",
+            quantity: 100,
+        },
+        {
+            category: "milk",
+            name: "Skim",
+            quantity: 100
+        },
+        {
+            category: "milk",
+            name: "Soy",
+            quantity: 100
+        },
+        {
+            category: "milk",
+            name: "Almond",
+            quantity: 100
+        },
+        {
+            category: "milk",
+            name: "Oat",
+            quantity: 100
+        },
+        {
+            category: "sugar",
+            name: "White",
+            quantity: 100
+        },
+        {
+            category: "sugar",
+            name: "Raw",
+            quantity: 100
+        },
+        {
+            category: "sugar",
+            name: "Stevia",
+            quantity: 100
+        },
+        {
+            category: "sugar",
+            name: "Honey",
+            quantity: 100
+        },
+        {
+            category: "size",
+            name: "Small",
+            quantity: "100"
+        },
+        {
+            category: "size",
+            name: "Regular",
+            quantity: 100
+        },
+        {
+            category: "size",
+            name: "Large",
+            quantity: 100
+        }
+    ]
+
+    console.log("Seeding inventory...");
+    try {
+        let result = await InventoryModel.insertMany(inventory);
+        console.log([...result]);
+        return [...result];
+    } catch (error) {
+        console.error("Error seeding inventory" + error);
+    }
+}
+
 
 async function seed(){
     await databaseConnect();
@@ -111,6 +185,7 @@ async function seed(){
     let newUsers = await seedUsers();
     let newCategories = await seedCategories();
     let newItems = await seedItems();
+    let newInventory = await seedInventory();
 
     let newJwt = createJwt(newUsers[0]._id);
     console.log("New JWT: " + newJwt);
