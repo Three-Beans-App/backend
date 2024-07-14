@@ -187,10 +187,12 @@ async function seed(){
     let newItems = await seedItems();
     let newInventory = await seedInventory();
 
-    let newJwt = createJwt(newUsers[0]._id);
-    console.log("New JWT: " + newJwt);
-
-    validateJwt(newJwt);
+    console.log("Creating user JWTs...");
+    newUsers.forEach(user => {
+        let newJwt = createJwt(user._id);
+        console.log(`New JWT for ${user.name}:\n ${newJwt}`);
+        validateJwt(newJwt);
+    }); 
 
     console.log("Data seeded successfully!");
     await databaseClose();
