@@ -2,6 +2,7 @@ const { UserModel } = require('../models/UserModel');
 const { CategoryModel, ItemModel, InventoryModel } = require('../models/ItemModel');
 const { createJwt, validateJwt } = require('./auth');
 const { databaseConnect, databaseClear, databaseClose } = require('./database');
+const { OrderModel } = require('../models/OrderModel');
 
 
 async function seedUsers() {
@@ -32,10 +33,11 @@ async function seedUsers() {
         let result = await UserModel.insertMany(users);
         console.log([...result]);
         return [...result];
-    } catch (error) {
+    } catch(error) {
         console.error("Error seeding users:" + error);
     }
 }
+
 
 async function seedCategories() {
     const categories = [
@@ -50,10 +52,11 @@ async function seedCategories() {
         let result = await CategoryModel.insertMany(categories);
         console.log([...result]);
         return [...result]
-    } catch (error) {
+    } catch(error) {
         console.error("Error seeding categories:" + error)
     }
 }
+
 
 async function seedItems() {
     try {
@@ -63,6 +66,12 @@ async function seedItems() {
         const food = await CategoryModel.findOne({ name: "food" });
 
         const items = [
+            {
+                name: "Cappuccino",
+                category: coffee._id,
+                price: 5.99,
+                quantity: 80,
+            },
             {
                 name: "Espresso",
                 category: coffee._id,
@@ -97,10 +106,11 @@ async function seedItems() {
         let result = await ItemModel.insertMany(items);
         console.log([...result]);
         return [...result];
-    } catch (error) {
+    } catch(error) {
         console.error("Error seeding items:" + error);
     }
 }
+
 
 async function seedInventory() {
     const inventory = [
@@ -177,6 +187,101 @@ async function seedInventory() {
 }
 
 
+async function calculateTotalPrice(items) {
+    return items.reduce((acc, item) => acc + item.total, 0);
+}
+
+async function seedOrders(users, items) {
+    try {
+        const milkOptions = await InventoryModel.find({ category: "milk" });
+        const sugarOptions = await InventoryModel.find({ category: "sugar" });
+        const sizeOptions = await InventoryModel.find({ category: "size" });
+
+        const orderItems1 = [
+                {
+                itemId: items[0]._id,
+                name: items[0].name,
+                category: items[0].category,
+                quantity: 2,
+                price: items[0].price,
+                total: items[0].price * 2,
+                customizations: {
+                    size: sizeOptions[1]._id,
+                    milk: milkOptions[0]._id,
+                    sugar: sugarOptions[0]._id
+                }               
+            }
+        ];
+        const orderItems2 = [
+            {
+                itemId: items[1]._id,
+                name: items[1].name,
+                category: items[1].category,
+                quantity: 1,
+                price: items[1].price,
+                total: items[1].price,
+                customizations: {
+                    size: sizeOptions[0]._id,
+                    milk: null,
+                    sugar: sugarOptions[0]._id
+                }               
+            },
+            {
+                itemId: items[0]._id,
+                name: items[0].name,
+                category: items[0].category,
+                quantity: 1,
+                price: items[0].price,
+                total: items[0].price,
+                customizations: {
+                    size: sizeOptions[2]._id,
+                    milk: milkOptions[2]._id,
+                    sugar: sugarOptions[1]._id
+                }               
+            },
+            {
+                itemId: items[4]._id,
+                name: items[4].name,
+                category: items[4].category,
+                quantity: 2,
+                price: items[4].price,
+                total: items[4].price * 2,
+                customizations: {
+                    size: null,
+                    milk: null,
+                    sugar: null
+                }               
+            }
+
+        ]
+
+
+
+        const orders = [
+            {
+                user: users[1]._id,
+                items: orderItems1,
+                totalPrice: await calculateTotalPrice(orderItems1),
+                status: "completed"
+            },
+            {
+                user: users[2]._id,
+                items: orderItems2,
+                totalPrice: await calculateTotalPrice(orderItems2),
+                status: "completed"
+            }
+        ];
+
+        console.log("Seeding orders...");
+        let result = await OrderModel.insertMany(orders);
+        console.log([...result]);
+        return [...result];
+    } catch(error) {
+        console.error("Error seeding orders:" + error);
+    }
+}
+
+
 async function seed(){
     await databaseConnect();
     await databaseClear();
@@ -186,11 +291,14 @@ async function seed(){
     let newCategories = await seedCategories();
     let newItems = await seedItems();
     let newInventory = await seedInventory();
+    let newOrders = await seedOrders(newUsers, newItems);
 
-    let newJwt = createJwt(newUsers[0]._id);
-    console.log("New JWT: " + newJwt);
-
-    validateJwt(newJwt);
+    console.log("Creating user JWTs...");
+    newUsers.forEach(user => {
+        let newJwt = createJwt(user._id);
+        console.log(`New JWT for ${user.name}:\n ${newJwt}`);
+        validateJwt(newJwt);
+    }); 
 
     console.log("Data seeded successfully!");
     await databaseClose();
