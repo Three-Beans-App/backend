@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { UserModel } = require('./UserModel.js');
-const { ItemModel } = require('./ItemModel.js');
+const { ItemModel, CustomisationModel, CategoryModel } = require('./ItemModel.js');
 
 
 const favouriteItemSchema = new mongoose.Schema({
@@ -14,7 +14,8 @@ const favouriteItemSchema = new mongoose.Schema({
         required: true
     },
     category: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
         required: true
     },
     price: {
@@ -23,15 +24,23 @@ const favouriteItemSchema = new mongoose.Schema({
     },
     customizations: {
         size: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Customisation',
             required: false
         },
         milk: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Customisation',
             required: false
         },
         sugar: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Customisation',
+            required: false
+        },
+        extra: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Customisation',
             required: false
         }
     }

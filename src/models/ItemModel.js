@@ -42,10 +42,10 @@ const itemSchema = new mongoose.Schema({
 });
 
 
-const inventorySchema = new mongoose.Schema({
+const customisationSchema = new mongoose.Schema({
     category: {
         type: String,
-        enum: ["milk", "sugar", "size"],
+        enum: ["milk", "sugar", "size", "extra"],
         equired: true
     },
     name: {
@@ -56,15 +56,20 @@ const inventorySchema = new mongoose.Schema({
     quantity: {
         type: Number,
         required: true
+    },
+    price: {
+        type: Number,
+        default: 0,
+        required: true,
     }
 })
 
 
 const ItemModel = mongoose.model("Item", itemSchema);
-const InventoryModel = mongoose.model("Inventory", inventorySchema);
+const CustomisationModel = mongoose.model("Customisation", customisationSchema);
 
 module.exports = {
     ItemModel,
-    InventoryModel,
+    CustomisationModel,
     CategoryModel
 }
