@@ -67,38 +67,168 @@ async function seedItems() {
 
         const items = [
             {
-                name: "Cappuccino",
+                name: "Cappuccino", // 0
                 category: coffee._id,
                 price: 5.99,
                 quantity: 80,
+                description: "A shot of esspresso with equal parts steamed milk and froth."
             },
             {
-                name: "Espresso",
+                name: "Latte", // 1
+                category: coffee._id,
+                price: 5.99,
+                quantity: 80,
+                description: "A shot of esspresso with steamed milk and light froth."
+            },
+            {
+                name: "Flat White", // 2
+                category: coffee._id,
+                price: 5.99,
+                quantity: 80,
+                description: "A shot of esspresso with less milk and very light froth"
+            },
+            {
+                name: "Long Black", // 3
+                category: coffee._id,
+                price: 5.99,
+                quantity: 80,
+                description: "A double shot of esspresso served with hot water."
+            },
+            {
+                name: "Espresso", // 4
                 category: coffee._id,
                 price: 3.99,
                 quantity: 80,
                 description: "Strong and hot shot of espresso"
             },
             {
-                name: "Green Tea",
+                name: "English Breakfast", // 5
                 category: tea._id,
                 price: 4.99,
                 quantity: 50,
-                description: "Refreshing green tea",
+                description: "A full bodied black tea served with milk and sugar."
             },
             {
-                name: "Chocolate Milkshake",
+                name: "Green Tea", // 6
+                category: tea._id,
+                price: 4.99,
+                quantity: 50,
+                description: "Refreshing green tea served with hot water.",
+            },
+            {
+                name: "Earl Grey Tea", // 7
+                category: tea.id,
+                price: 4.99,
+                quantity: 50,
+                description: "Black tea flavoured with bergamont served with hot water or milk."
+            },
+            {
+                name: "Chai Latte", // 8
+                category: tea.id,
+                price: 5.99,
+                quantity: 50,
+                description: "Blact tea served with milk and spiced with cinnamon, cardamom, cloves, peppercorns and star anise."
+            },
+            {
+                name: "Chocolate Milkshake", // 9
                 category: milkshake._id,
                 price: 7.99,
                 quantity: 50,
-                description: "Delicious rich chocolate milkshake"
             },
             {
-                name: "Brekkie Roll",
+                name: "Strawberry Milkshake", // 10
+                category: milkshake._id,
+                price: 7.99,
+                quantity: 50,
+            },
+            {
+                name: "Vanilla Milkshake", // 11
+                category: milkshake._id,
+                price: 7.99,
+                quantity: 50,
+            },
+            {
+                name: "Caramel Milkshake", // 12
+                category: milkshake._id,
+                price: 7.99,
+                quantity: 50
+            },
+            {
+                name: "Brekkie Roll", // 13
                 category: food._id,
                 price: 11.99,
                 quantity: 25,
                 description: "Fresh baked brioche roll with fried egg, bacon and a hashbrown"
+            },
+            {
+                name: "Ham & Cheese Toastie", // 14
+                category: food._id,
+                price: 7.99,
+                quantity: 25,
+                description: "Ham and cheese served in a thick toasted white bread sandwhich."
+            },
+            {
+                name: "Reuben", // 15
+                category: food._id,
+                price: 8.99,
+                quantity: 25,
+                description: "Toasted rye bread with corned beef, swiss cheese, sauerkraut and thousand island dressing."
+            },
+            {
+                name: "Ham & Cheese Croissant", // 16
+                category: food._id,
+                price: 7.99,
+                quantity: 25,
+                description: "Toasted croissant with ham and melted cheese inside."
+            },
+            {
+                name: "Croissant", // 17
+                category: food._id,
+                price: 5.99,
+                quantity: 25,
+            },
+            {
+                name: "Almond Croissant", // 18
+                category: food._id,
+                price: 7.99,
+                quantity: 25,
+                description: "Fresh baked croissant with a sweet almond filling topped with almonds."
+            },
+            {
+                name: "Blueberry muffin", // 19
+                category: food._id,
+                price: 6.99,
+                quantity: 20,
+            },
+            {
+                name: "Choc-Chip Muffin", // 20 
+                category: food._id,
+                price: 6.99,
+                quantity: 20,
+            },
+            {
+                name: "Banana Bread", // 21
+                category: food._id,
+                price: 6.99,
+                quantity: 20,
+            },
+            {
+                name: "Brownie", // 22
+                category: food._id,
+                price: 6.99,
+                quantity: 20
+            },
+            {
+                name: "Lemon Slice", // 23
+                category: food._id,
+                price: 6.99,
+                quantity: 20
+            },
+            {
+                name: "Carrot Cake", // 24
+                category: food._id,
+                price: 6.99,
+                quantity: 20
             }
         ];
 
