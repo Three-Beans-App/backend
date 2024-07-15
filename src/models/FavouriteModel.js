@@ -38,11 +38,11 @@ const favouriteItemSchema = new mongoose.Schema({
             ref: 'Customisation',
             required: false
         },
-        extra: {
+        extras: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Customisation',
             required: false
-        }
+        }]
     }
 });
 
@@ -53,7 +53,11 @@ const favouriteSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    item: favouriteItemSchema
+    item: favouriteItemSchema,
+    totalPrice: {
+        type: Number,
+        required: true
+    }
 });
 
 const FavouriteModel = mongoose.model('Favourite', favouriteSchema);

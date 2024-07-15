@@ -1,8 +1,10 @@
 const { UserModel } = require('../models/UserModel');
 const { CategoryModel, ItemModel, CustomisationModel } = require('../models/ItemModel');
+const { OrderModel } = require('../models/OrderModel');
+const { FavouriteModel } = require('../models/FavouriteModel');
 const { createJwt, validateJwt } = require('./auth');
 const { databaseConnect, databaseClear, databaseClose } = require('./database');
-const { OrderModel } = require('../models/OrderModel');
+
 
 
 async function seedUsers() {
@@ -34,7 +36,7 @@ async function seedUsers() {
         console.log([...result]);
         return [...result];
     } catch(error) {
-        console.error("Error seeding users:" + error);
+        console.error("Error seeding users: " + error);
     }
 }
 
@@ -53,7 +55,7 @@ async function seedCategories() {
         console.log([...result]);
         return [...result]
     } catch(error) {
-        console.error("Error seeding categories:" + error)
+        console.error("Error seeding categories: " + error)
     }
 }
 
@@ -237,7 +239,7 @@ async function seedItems() {
         console.log([...result]);
         return [...result];
     } catch(error) {
-        console.error("Error seeding items:" + error);
+        console.error("Error seeding items: " + error);
     }
 }
 
@@ -245,61 +247,113 @@ async function seedItems() {
 async function seedCustomisation() {
     const customisations = [
         {
-            category: "milk",
+            category: "milk", // 0
             name: "Whole",
             quantity: 100,
         },
         {
-            category: "milk",
+            category: "milk", // 1
             name: "Skim",
             quantity: 100
         },
         {
-            category: "milk",
+            category: "milk", // 2
             name: "Soy",
             quantity: 100
         },
         {
-            category: "milk",
+            category: "milk", // 3
             name: "Almond",
             quantity: 100
         },
         {
-            category: "milk",
+            category: "milk", // 4
             name: "Oat",
             quantity: 100
         },
         {
-            category: "sugar",
+            category: "sugar", // 0
             name: "White",
             quantity: 100
         },
         {
-            category: "sugar",
+            category: "sugar", // 1
             name: "Raw",
             quantity: 100
         },
         {
-            category: "sugar",
+            category: "sugar", // 2
             name: "Stevia",
             quantity: 100
         },
         {
-            category: "sugar",
+            category: "sugar", // 3
             name: "Honey",
             quantity: 100
         },
         {
-            category: "size",
+            category: "size", // 0
             name: "Regular",
             quantity: 100
         },
         {
-            category: "size",
+            category: "size", // 1
             name: "Large",
             quantity: 100,
             price: 2.00
+        },
+        {
+            category: "extra", // 0
+            name: "Sugar",
+            quantity: 100
+        },
+        {
+            category: "extra", // 1
+            name: "Stevia",
+            quantity: 100
+        },
+        {
+            category: "extra", // 2
+            name: "Honey",
+            quantity: 100
+        },
+        {
+            category: "extra", // 3
+            name: "Chocolate Dust",
+            quantity: 100,
+            price: 0.50
+        },
+        {
+            category: "extra", // 4
+            name: "Chocolate",
+            quantity: 100,
+            price: 1.00
+        },
+        {
+            category: "extra", // 5
+            name: "Cinnamon dust",
+            quantity: 100,
+            price: 0.50
+        },
+        {
+            category: "extra", // 6
+            name: "Caramel Drizzle",
+            quantity: 100,
+            price: 0.50
+        },
+        {
+            category: "extra", // 7
+            name: "Caramel",
+            quantity: 100,
+            price: 1.00
+        },
+        {
+            category: "extra", // 8
+            name: "Whipped Cream",
+            quantity: 100,
+            price: 1.00
         }
+
     ]
 
     console.log("Seeding customisations...");
@@ -308,7 +362,7 @@ async function seedCustomisation() {
         console.log([...result]);
         return [...result];
     } catch (error) {
-        console.error("Error seeding customisations" + error);
+        console.error("Error seeding customisations: " + error);
     }
 }
 
@@ -317,14 +371,22 @@ async function calculateTotalPrice(items) {
     let totalPrice = 0;
 
     for (let item of items) {
-        let itemTotal = item.price * item.quantity;
+        let itemQuantity = item.quantity || 1;
+        let itemTotal = item.price * itemQuantity;
 
         if (item.customisations) {
             for (let [key, value] of Object.entries(item.customisations)) {
-                if (value) {
+                if (Array.isArray(value)) {
+                    for (let extra of value) {
+                        const customisation = await CustomisationModel.findById(extra);
+                        if (customisation) {
+                            itemTotal += customisation.price * itemQuantity;
+                        }
+                    }                    
+                } else if (value) {
                     const customisation = await CustomisationModel.findById(value);
                     if (customisation) {
-                        itemTotal += customisation.price * item.quantity;
+                        itemTotal += customisation.price * itemQuantity;
                     }
                 }
             }
@@ -336,9 +398,9 @@ async function calculateTotalPrice(items) {
 
 async function seedOrders(users, items) {
     try {
+        const sizeOptions = await CustomisationModel.find({ category: "size" });
         const milkOptions = await CustomisationModel.find({ category: "milk" });
         const sugarOptions = await CustomisationModel.find({ category: "sugar" });
-        const sizeOptions = await CustomisationModel.find({ category: "size" });
         const extraOptions = await CustomisationModel.find({ category: "extra" });
 
         const orderItems1 = [
@@ -352,7 +414,8 @@ async function seedOrders(users, items) {
                 customisations: {
                     size: sizeOptions[1]._id,
                     milk: milkOptions[0]._id,
-                    sugar: sugarOptions[0]._id
+                    sugar: sugarOptions[0]._id,
+                    extras: [extraOptions[3], extraOptions[4]]
                 }               
             }
         ];
@@ -397,7 +460,7 @@ async function seedOrders(users, items) {
                 }               
             }
 
-        ]
+        ];
 
 
 
@@ -421,7 +484,64 @@ async function seedOrders(users, items) {
         console.log([...result]);
         return [...result];
     } catch(error) {
-        console.error("Error seeding orders:" + error);
+        console.error("Error seeding orders: " + error);
+    }
+}
+
+
+async function seedFavourites(users, items) {
+    try {
+        const sizeOptions = await CustomisationModel.find({ category: "size" });
+        const milkOptions = await CustomisationModel.find({ category: "milk" });
+        const sugarOptions = await CustomisationModel.find({ category: "sugar" });
+        const extraOptions = await CustomisationModel.find({ category: "extra" });
+
+        const favouriteItems = [
+            {
+                itemId: items[1]._id,
+                name: items[1].name,
+                category: items[1].category,
+                price: items[4].price,
+
+                customisations: {
+                    size: sizeOptions[1],
+                    milk: milkOptions[0],
+                    sugar: sugarOptions[1],
+                    extras: [extraOptions[3], extraOptions[7]]
+                }
+            },
+            {
+                itemId: items[9]._id,
+                name: items[9].name,
+                category: items[9].category,
+                price: items[9].price,
+                customisations: {
+                    size: sizeOptions[1],
+                    milk: milkOptions[3],
+                    extras: [extraOptions[6], extraOptions[8]]
+                }
+            }
+        ];
+
+        const favourites = [
+            {
+                user: users[1]._id,
+                item: favouriteItems[0],
+                totalPrice: await calculateTotalPrice([favouriteItems[0]])
+            },
+            {
+                user: users[2]._id,
+                item: favouriteItems[1],
+                totalPrice: await calculateTotalPrice([favouriteItems[1]])
+            }
+        ];
+
+        console.log("Seeding favourites...");
+        let result = await FavouriteModel.insertMany(favourites);
+        console.log([...result]);
+        return[...result];
+    } catch(error) {
+        console.error("Error seeding favourites: " + error);
     }
 }
 
@@ -436,6 +556,7 @@ async function seed(){
     let newItems = await seedItems();
     let newCustomisations = await seedCustomisation();
     let newOrders = await seedOrders(newUsers, newItems);
+    let newFavourites = await seedFavourites(newUsers, newItems);
 
     console.log("Creating user JWTs...");
     newUsers.forEach(user => {
