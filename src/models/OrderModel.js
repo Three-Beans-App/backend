@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { UserModel } = require('./UserModel.js');
-const { ItemModel, CategoryModel, InventoryModel } = require('./ItemModel.js');
+const { ItemModel, CategoryModel, CustomisationModel } = require('./ItemModel.js');
 
 const orderItemSchema = new mongoose.Schema({
     itemId: {
@@ -32,17 +32,22 @@ const orderItemSchema = new mongoose.Schema({
     customizations: {
         size: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Inventory',
+            ref: 'Customisation',
             required: false
         },
         milk: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Inventory',
+            ref: 'Customisation',
             required: false
         },
         sugar: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Inventory',
+            ref: 'Customisation',
+            required: false
+        },
+        extra: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Customisation',
             required: false
         }
     }
