@@ -299,7 +299,53 @@ async function seedCustomisation() {
             name: "Large",
             quantity: 100,
             price: 2.00
+        },
+        {
+            category: "extra", // 0
+            name: "Sugar",
+            quantity: 100
+        },
+        {
+            category: "extra", // 1
+            name: "Stevia",
+            quantity: 100
+        },
+        {
+            category: "extra", // 2
+            name: "Honey",
+            quantity: 100
+        },
+        {
+            category: "extra", // 3
+            name: "Chocolate Dust",
+            quantity: 100,
+            price: 0.50
+        },
+        {
+            category: "extra", // 4
+            name: "Chocolate",
+            quantity: 100,
+            price: 1.00
+        },
+        {
+            category: "extra", // 5
+            name: "Cinnamon dust",
+            quantity: 100,
+            price: 0.50
+        },
+        {
+            category: "extra", // 6
+            name: "Caramel Drizzle",
+            quantity: 100,
+            price: 0.50
+        },
+        {
+            category: "extra", // 7
+            name: "Caramel",
+            quantity: 100,
+            price: 1.00
         }
+
     ]
 
     console.log("Seeding customisations...");
@@ -321,7 +367,14 @@ async function calculateTotalPrice(items) {
 
         if (item.customisations) {
             for (let [key, value] of Object.entries(item.customisations)) {
-                if (value) {
+                if (Array.isArray(value)) {
+                    for (let extra of value) {
+                        const customisation = await CustomisationModel.findById(extra);
+                        if (customisation) {
+                            itemTotal += customisation.price * item.quantity;
+                        }
+                    }                    
+                } else if (value) {
                     const customisation = await CustomisationModel.findById(value);
                     if (customisation) {
                         itemTotal += customisation.price * item.quantity;
@@ -352,7 +405,8 @@ async function seedOrders(users, items) {
                 customisations: {
                     size: sizeOptions[1]._id,
                     milk: milkOptions[0]._id,
-                    sugar: sugarOptions[0]._id
+                    sugar: sugarOptions[0]._id,
+                    extras: [extraOptions[3], extraOptions[4]]
                 }               
             }
         ];

@@ -45,11 +45,11 @@ const orderItemSchema = new mongoose.Schema({
             ref: 'Customisation',
             required: false
         },
-        extra: {
+        extras: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Customisation',
             required: false
-        }
+        }]
     }
 });
 
