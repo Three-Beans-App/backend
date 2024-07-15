@@ -21,7 +21,7 @@ const favouriteItemSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    customizations: {
+    customisations: {
         size: {
             type: String,
             required: false
