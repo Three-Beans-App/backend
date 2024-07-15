@@ -1,5 +1,5 @@
 const { UserModel } = require('../models/UserModel');
-const { CategoryModel, ItemModel, InventoryModel } = require('../models/ItemModel');
+const { CategoryModel, ItemModel, CustomisationModel } = require('../models/ItemModel');
 const { createJwt, validateJwt } = require('./auth');
 const { databaseConnect, databaseClear, databaseClose } = require('./database');
 const { OrderModel } = require('../models/OrderModel');
@@ -242,8 +242,8 @@ async function seedItems() {
 }
 
 
-async function seedInventory() {
-    const inventory = [
+async function seedCustomisation() {
+    const customisations = [
         {
             category: "milk",
             name: "Whole",
@@ -291,41 +291,55 @@ async function seedInventory() {
         },
         {
             category: "size",
-            name: "Small",
-            quantity: "100"
-        },
-        {
-            category: "size",
             name: "Regular",
             quantity: 100
         },
         {
             category: "size",
             name: "Large",
-            quantity: 100
+            quantity: 100,
+            price: 2.00
         }
     ]
 
-    console.log("Seeding inventory...");
+    console.log("Seeding customisations...");
     try {
-        let result = await InventoryModel.insertMany(inventory);
+        let result = await CustomisationModel.insertMany(customisations);
         console.log([...result]);
         return [...result];
     } catch (error) {
-        console.error("Error seeding inventory" + error);
+        console.error("Error seeding customisations" + error);
     }
 }
 
 
 async function calculateTotalPrice(items) {
-    return items.reduce((acc, item) => acc + item.total, 0);
+    let totalPrice = 0;
+
+    for (let item of items) {
+        let itemTotal = item.price * item.quantity;
+
+        if (item.customisations) {
+            for (let [key, value] of Object.entries(item.customisations)) {
+                if (value) {
+                    const customisation = await CustomisationModel.findById(value);
+                    if (customisation) {
+                        itemTotal += customisation.price * item.quantity;
+                    }
+                }
+            }
+        }
+        totalPrice += itemTotal;
+    }
+    return totalPrice;
 }
 
 async function seedOrders(users, items) {
     try {
-        const milkOptions = await InventoryModel.find({ category: "milk" });
-        const sugarOptions = await InventoryModel.find({ category: "sugar" });
-        const sizeOptions = await InventoryModel.find({ category: "size" });
+        const milkOptions = await CustomisationModel.find({ category: "milk" });
+        const sugarOptions = await CustomisationModel.find({ category: "sugar" });
+        const sizeOptions = await CustomisationModel.find({ category: "size" });
+        const extraOptions = await CustomisationModel.find({ category: "extra" });
 
         const orderItems1 = [
                 {
@@ -335,7 +349,7 @@ async function seedOrders(users, items) {
                 quantity: 2,
                 price: items[0].price,
                 total: items[0].price * 2,
-                customizations: {
+                customisations: {
                     size: sizeOptions[1]._id,
                     milk: milkOptions[0]._id,
                     sugar: sugarOptions[0]._id
@@ -350,7 +364,7 @@ async function seedOrders(users, items) {
                 quantity: 1,
                 price: items[1].price,
                 total: items[1].price,
-                customizations: {
+                customisations: {
                     size: sizeOptions[0]._id,
                     milk: null,
                     sugar: sugarOptions[0]._id
@@ -363,8 +377,8 @@ async function seedOrders(users, items) {
                 quantity: 1,
                 price: items[0].price,
                 total: items[0].price,
-                customizations: {
-                    size: sizeOptions[2]._id,
+                customisations: {
+                    size: sizeOptions[1]._id,
                     milk: milkOptions[2]._id,
                     sugar: sugarOptions[1]._id
                 }               
@@ -376,7 +390,7 @@ async function seedOrders(users, items) {
                 quantity: 2,
                 price: items[4].price,
                 total: items[4].price * 2,
-                customizations: {
+                customisations: {
                     size: null,
                     milk: null,
                     sugar: null
@@ -420,7 +434,7 @@ async function seed(){
     let newUsers = await seedUsers();
     let newCategories = await seedCategories();
     let newItems = await seedItems();
-    let newInventory = await seedInventory();
+    let newCustomisations = await seedCustomisation();
     let newOrders = await seedOrders(newUsers, newItems);
 
     console.log("Creating user JWTs...");

@@ -22,7 +22,7 @@ const favouriteItemSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    customizations: {
+    customisations: {
         size: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Customisation',
