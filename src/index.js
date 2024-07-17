@@ -5,7 +5,7 @@ const PORT = process.env.PORT || 3000;
 
 
 app.listen(PORT, () => {
-    console.log("Server successully started!");
+    console.log("Server listening on http://localhost:3000");
 
     // After server succesfully starts, connect to the database
     databaseConnect()
