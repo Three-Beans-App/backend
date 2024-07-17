@@ -10,23 +10,27 @@ const { databaseConnect, databaseClear, databaseClose } = require('./database');
 async function seedUsers() {
     const users = [
         {
-            name: "Brett",
-            email: "brett@email.com",
+            name: "3BeansCafe",
+            email: "3bc@email.com",
             password: "12345",
             birthday: "06/07/1996",
             admin: true
         },
         {
-            name: "Sarah",
-            email: "sarah@email.com",
-            password: "12345",
-            birthday: "11/04/1999",
+            name: "Esther",
+            email: "esther@email.com",
+            password: "12345"
         },
         {
-            name: "Tim",
-            email: "tim@email.com",
+            name: "Nicholas",
+            email: "nicholas@email.com",
+            password: "12345"
+        },
+        {
+            name: "Brett",
+            email: "brett@email.com",
             password: "12345",
-            birthday: "24/08/1992"
+            birthday: "06/07/1996"
         }
     ];
 
