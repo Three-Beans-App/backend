@@ -10,10 +10,11 @@ async function comparePasswords(plaintextPassword, encryptedPassword) {
     return doesPasswordMatch;
 }
 
-function createJwt(userId){
+function createJwt(user){
     let newJwt = jwt.sign(
         {
-            id: userId
+            id: user._id,
+            admin: user.admin
         },
         process.env.JWT_KEY,
         {
