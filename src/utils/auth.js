@@ -21,7 +21,6 @@ function createJwt(user){
             expiresIn: "14d"
         }
     );
-
     return newJwt;
 }
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { UserModel } = require('../models/UserModel');
-const { comparePasswords, createJwt, verifyJwt } = require('../utils/auth');
+const { comparePasswords, createJwt, verifyJwt, decodedJwt } = require('../utils/auth');
 const router = express.Router();
 
 // Base route to get all users
@@ -42,11 +42,13 @@ router.post("/signup", async (request, response, next) => {
         await newUser.save();
         // Create JWT for the new user
         const token = createJwt(newUser._id);
+        const decodedJwtData = decodedJwt(token);
 
         // Respond with JWT and confirmation message 
         response.status(201).json({
             message: `Thank you for signing up to Three Beans ${name}!`,
-            token
+            token,
+            decodedJwt: decodedJwtData
         });
     } catch (error) {
         // Handle errors using server middleware
