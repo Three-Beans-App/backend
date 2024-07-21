@@ -10,10 +10,11 @@ async function comparePasswords(plaintextPassword, encryptedPassword) {
     return doesPasswordMatch;
 }
 
-function createJwt(userId){
+function createJwt(user){
     let newJwt = jwt.sign(
         {
-            id: userId
+            id: user._id,
+            admin: user.admin
         },
         process.env.JWT_KEY,
         {
@@ -40,6 +41,26 @@ function validateJwt(jwtToValidate){
     return isJwtValid;
 }
 
+function verifyJwt(request, response, next) {
+    const token = request.headers.authorization && request.headers.authorization.split(" ")[1];
+    if (!token) {
+        return response.status(401).json({
+            message: "Authentication token is required"
+        });
+    }
+
+    jwt.verify(token, process.env.JWT_KEY, (error, decoded) => {
+        if (error) {
+            return response.status(401).json({
+                message: "Invalid token"
+            });
+        }
+
+        request.userId = decoded.id;
+        next();
+    });
+}
+
 function decodedJwt(jwtToDecode){
     let decodedData = jwt.verify(jwtToDecode, process.env.JWT_KEY);
     return decodedData;
@@ -49,5 +70,6 @@ module.exports = {
     comparePasswords,
     createJwt,
     validateJwt,
+    verifyJwt,
     decodedJwt
 }

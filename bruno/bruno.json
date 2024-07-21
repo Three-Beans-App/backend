@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Three beans ",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

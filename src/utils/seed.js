@@ -4,6 +4,7 @@ const { OrderModel } = require('../models/OrderModel');
 const { FavouriteModel } = require('../models/FavouriteModel');
 const { createJwt, validateJwt } = require('./auth');
 const { databaseConnect, databaseClear, databaseClose } = require('./database');
+const bcrypt = require('bcryptjs');
 
 
 
@@ -36,6 +37,9 @@ async function seedUsers() {
 
     console.log("Seeding users...")
     try {
+        for (let user of users) {
+            user.password = await bcrypt.hash(user.password, 10);
+        }
         let result = await UserModel.insertMany(users);
         console.log([...result]);
         return [...result];
@@ -564,7 +568,7 @@ async function seed(){
 
     console.log("Creating user JWTs...");
     newUsers.forEach(user => {
-        let newJwt = createJwt(user._id);
+        let newJwt = createJwt(user);
         console.log(`New JWT for ${user.name}:\n ${newJwt}`);
         validateJwt(newJwt);
     }); 
