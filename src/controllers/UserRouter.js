@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { UserModel } = require('../models/UserModel');
-const { comparePasswords, createJwt } = require('../utils/auth');
+const { comparePasswords, createJwt, verifyJwt } = require('../utils/auth');
 const router = express.Router();
 
 // Base route to get all users
@@ -85,6 +85,53 @@ router.post("/login", async (request, response, next) => {
         });
     } catch (error) {
         // Handle errors using server middleware
+        next(error);
+    }
+});
+
+
+// User update route
+router.patch("/update", verifyJwt, async (request, response, next) => {
+    const { name, email, password, birthday } = request.body;
+
+    try {
+        // verify the user is editing their own rofile
+        const user = await UserModel.findById(request.userId).exec();
+        if (!user) {
+            return response.status(404).json({
+                message: "User not found."
+            });
+        }
+        // update user fields
+        if (name) user.name = name;
+        if (email) {
+            // verify that the email isn't already in use
+            const existingUser = await UserModel.findOne({ email }).exec();
+            if (existingUser && existingUser._id.toString() !== request.userId) {
+                return response.status(400).json({
+                    message: "This email is already in use."
+                });
+            }
+            user.email = email;
+        }
+        if (password) {
+            // Hash the new password
+            user.password = await bcrypt.hash(password, 10);
+        }
+        if (birthday) user.birthday = birthday;
+
+        // Save the updated details to the database
+        await user.save();
+
+        // Create a JWT for the updated user
+        const token = createJwt(user);
+
+        response.status(200).json({
+            // respond with confirmation and JWT
+            message: "Profile updated successfully!",
+            token
+        });
+    } catch (error) {
         next(error);
     }
 });
