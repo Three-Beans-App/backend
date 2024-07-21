@@ -127,9 +127,32 @@ router.patch("/update", verifyJwt, async (request, response, next) => {
         const token = createJwt(user);
 
         response.status(200).json({
-            // respond with confirmation and JWT
+            // Respond with confirmation and JWT
             message: "Profile updated successfully!",
             token
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+
+// User profile delete route
+router.delete("/delete", verifyJwt, async (request, response, next) => {
+    try {
+        // Ensure the user is deleting their own profile
+        const user = await UserModel.findById(request.userId).exec();
+        if (!user) {
+            return response.status(404).json({
+                message: "User not found."
+            });
+        }
+        // Delete the user profile
+        await UserModel.findByIdAndDelete(request.userId).exec();
+
+        response.status(200).json({
+            // Respond with the name of the user deleted as confirmation
+            message: `User ${user.name} deleted successfully.`
         });
     } catch (error) {
         next(error);
