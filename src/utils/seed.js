@@ -13,8 +13,7 @@ async function seedUsers() {
         {
             name: "3BeansCafe",
             email: "3bc@email.com",
-            password: "12345",
-            birthday: "06/07/1996",
+            password: "12345",           
             admin: true
         },
         {
@@ -31,7 +30,7 @@ async function seedUsers() {
             name: "Brett",
             email: "brett@email.com",
             password: "12345",
-            birthday: "06/07/1996"
+            birthday: new Date("1996-07-06")
         }
     ];
 

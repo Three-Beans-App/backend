@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     birthday: {
-        type: String,
+        type: Date,
         required: false
     },
     admin: {
