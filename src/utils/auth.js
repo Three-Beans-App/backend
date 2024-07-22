@@ -3,13 +3,6 @@ const jwt = require ('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
-async function comparePasswords(plaintextPassword, encryptedPassword) {
-    let doesPasswordMatch = false;
-    doesPasswordMatch = await bcrypt.compare(plaintextPassword, encryptedPassword);
-
-    return doesPasswordMatch;
-}
-
 function createJwt(user){
     let newJwt = jwt.sign(
         {
@@ -66,7 +59,6 @@ function decodedJwt(jwtToDecode){
 }
 
 module.exports = {
-    comparePasswords,
     createJwt,
     validateJwt,
     verifyJwt,

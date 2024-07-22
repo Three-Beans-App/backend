@@ -28,18 +28,17 @@ const userSchema = new mongoose.Schema({
 userSchema.pre(
     "save",
     async function (next) {
-        const user = this;
 
-        if (!user.isModified("password")) {
+        if (!this.isModified("password")) {
             return next();
         }
 
         try {
-            const hash = await bcrypt.hash(this.password, 10);
-            this.password = hash;
+            const salt = await bcrypt.genSalt(10);
+            this.password = await bcrypt.hash(this.password, salt);
             next();
-        } catch (err) {
-            next(err);
+        } catch (error) {
+            next(error);
         }
     });
 
