@@ -71,7 +71,10 @@ router.post("/login", async (request, response, next) => {
             });
         }
         // Authenticate user by checking against user.password
-        const isPassword = await comparePasswords(password, user.password);
+        const isPassword = await bcrypt.compare(password, user.password);
+
+        console.log("password comparison result: ", isPassword);
+
         if(!isPassword) {
             return response.status(400).json({
                 message: "Your password is incorrect, please double check and try again."
