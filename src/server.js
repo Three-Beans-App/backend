@@ -16,6 +16,9 @@ app.get("/", (request, response) => {
 const userRouter = require('./controllers/UserRouter.js');
 app.use("/users", userRouter);
 
+const menuRouter = require('./controllers/MenuRouter.js');
+app.use("/menu", menuRouter);
+
 
 app.get("*", (request, response, next) => {
     response.status(404).json({
