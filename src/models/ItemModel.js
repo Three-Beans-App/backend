@@ -27,8 +27,9 @@ const itemSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    quantity: {
-        type: Number,
+    available: {
+        type: Boolean,
+        default: true,
         required: true
     },
     description: {
