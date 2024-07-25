@@ -1,6 +1,20 @@
 const express = require('express');
+const multer = require('multer');
+const path = require('path');
 const { ItemModel, CategoryModel } = require('../models/ItemModel');
 const router = express.Router();
+
+
+const storage = multer.diskStorage({
+    destination: (request, file, callback) => {
+        callback(null, path.join(_dirname, '../public'));
+    },
+    filename: (request, file, callback) => {
+        callback(null, `${request.body.filename}${path.extname(file.originalname)}`);
+    }
+});
+
+const upload = multer({ storage });
 
 
 // Base route to get all items
@@ -99,4 +113,18 @@ router.post("/addItem", async (request, response, next) => {
 });
 
 
+// Route to handle image uploads
+router.post('/upload', upload.single('file'), (request, response) => {
+    response.status(200).json({
+        message: "File uploaded successfully"
+    });
+});
+
+
 module.exports = router;
+
+
+
+
+
+
