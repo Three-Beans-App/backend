@@ -32,7 +32,7 @@ describe('User Routes', () => {
         await UserModel.deleteMany({});
         user = new UserModel({
             email: "test@email.com",
-            password: await bcrypt.hash("password", 10),
+            password: "password",
             name: "Test User",
             birthday: new Date('1985-05-12')
         });
@@ -83,7 +83,19 @@ describe('User Routes', () => {
     });
 
 
-    describe("POST /users/login", () => { 
+    describe("POST /users/login", () => {
+        it('should login with an existing user', async () => {
+            const response = await request(app)
+                .post("/users/login")
+                .send({
+                    email: "test@email.com",
+                    password: "password"
+                });
+            expect(response.statusCode).toEqual(200);
+            expect(response.body.message).toBe(`Test User has logged in successfully!`)
+            expect(response.body.token).toBeDefined();
+        });
+
         it('should not login with an incorrect password', async () => {
             const response = await request(app)
                 .post("/users/login")
