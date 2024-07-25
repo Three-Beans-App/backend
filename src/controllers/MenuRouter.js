@@ -78,4 +78,25 @@ router.get("/categories/:categoryId", async (request, response, next) => {
 });
 
 
+// Route to create a new menu item
+router.post("/addItem", async (request, response, next) => {
+    const { name, category, price, description } = request.body;
+    try {
+        const newItem = new ItemModel({
+            name,
+            category,
+            price,
+            description
+        });
+        await newItem.save();
+        response.status(201).json({
+            message: "Item added successfully",
+            item: newItem
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+
 module.exports = router;
