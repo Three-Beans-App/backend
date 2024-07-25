@@ -60,32 +60,41 @@ router.post("/signup", async (request, response, next) => {
 // User login route
 router.post("/login", async (request, response, next) => {
     // Get user details from request body
-    const { email, password } = request.body;
+    const { email } = request.body;
 
     try {
         // Validate user by checking database for an email
         const user = await UserModel.findOne({ email }).exec();
         if (!user) {
-            return response.status(400).json({
+            return response.status(401).json({
+                status: "failed",
+                data: [],
                 message: "Sorry we can't find this email in our system."
             });
         }
         // Authenticate user by checking against user.password
-        const isPassword = await bcrypt.compare(password, user.password);
+        const isPassword = await bcrypt.compare(
+            request.body.password, 
+            user.password);
 
         if(!isPassword) {
-            return response.status(400).json({
+            return response.status(401).json({
+                status: "failed",
+                data: [],
                 message: "Your password is incorrect, please double check and try again."
             });
         }
-        // Create JWT for authorisation
-        const token = createJwt(user);
-
-        response.status(200).json({
+        if (isPassword) {
+            // generate JWT for user
+            const token = createJwt(user);
+            response.status(200).json({
             // Respond with confirmation and JWT
-            message: "Login successful!",
+            message: `${user.name} has logged in successfully!`,
             token
-        });
+            });
+        }
+        // Create JWT for authorisation
+               
     } catch (error) {
         // Handle errors using server middleware
         next(error);

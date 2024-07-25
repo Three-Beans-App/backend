@@ -30,18 +30,14 @@ describe('User Routes', () => {
     beforeEach(async () => {
         // Clear database before each test
         await UserModel.deleteMany({});
-
-
-        const hashedPassword = await bcrypt.hash('password', 10);
         user = new UserModel({
             email: "test@email.com",
-            password: hashedPassword,
+            password: await bcrypt.hash("password", 10),
             name: "Test User",
             birthday: new Date('1985-05-12')
         });
-        user.password = await bcrypt.hash(user.password, 10)
         await user.save();  
-        token = createJwt(user._id);
+        token = createJwt(user);
     });
     
 
@@ -87,7 +83,7 @@ describe('User Routes', () => {
     });
 
 
-    describe("POST /users/login", () => {  
+    describe("POST /users/login", () => { 
         it('should not login with an incorrect password', async () => {
             const response = await request(app)
                 .post("/users/login")
@@ -95,7 +91,7 @@ describe('User Routes', () => {
                     email: "test@email.com",
                     password: "12345"
                 });
-            expect(response.statusCode).toEqual(400);
+            expect(response.statusCode).toEqual(401);
             expect(response.body.message).toBe("Your password is incorrect, please double check and try again.");
         });
 
@@ -106,7 +102,7 @@ describe('User Routes', () => {
                     email: "random@email.com",
                     password: "password"
                 });
-            expect(response.statusCode).toEqual(400);
+            expect(response.statusCode).toEqual(401);
             expect(response.body.message).toBe("Sorry we can't find this email in our system.");
         });
     });
