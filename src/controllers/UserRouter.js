@@ -28,13 +28,11 @@ router.post("/signup", async (request, response, next) => {
                 message: "It looks like you've already made a profile with this email."
             });
         }
-        // Hash the password with bcrypt
-        const hashedPassword = await bcrypt.hash(password, 10);
         
         // Create a new user from request body
         const newUser = new UserModel({
             email,
-            password: hashedPassword,
+            password,
             name,
             birthday
         });
@@ -47,6 +45,7 @@ router.post("/signup", async (request, response, next) => {
         // Respond with JWT and confirmation message 
         response.status(201).json({
             message: `Thank you for signing up to Three Beans ${name}!`,
+            newUser,
             token,
             decodedJwt: decodedJwtData
         });
