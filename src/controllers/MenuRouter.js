@@ -101,9 +101,18 @@ router.post(
     async (request, response, next) => {
         const { name, category, price, description } = request.body;
         try {
+            const categoryDocument = await CategoryModel.findOne({
+                 name: category
+            }).exec();
+            if (!categoryDocument) {
+                return response.status(400).json({
+                    message: "Category not found"
+                });
+            }
+
             const newItem = new ItemModel({
                 name,
-                category,
+                category: categoryDocument._id,
                 price,
                 description
             });
@@ -135,10 +144,30 @@ router.patch(
         const { id } = request.params;
         const { name, category, price, description } = request.body;
         try {
+            const updateFields = {};
+
+            if (name) updateFields.name = name;
+            if (category) {
+                const categoryDocument = await CategoryModel.findOne({
+                    name: category
+                }).exec();
+                if (!categoryDocument) {
+                    return response.status(400).json({
+                        message: "Category not found"
+                    });
+                }
+                updateFields.category = categoryDocument._id;
+            }
+            if (price !== undefined) updateFields.price = price;
+            if (description) updateFields.description = description;
+
             const item = await ItemModel.findByIdAndUpdate(
                 id,
-                { name, category, price, description },
-                { new: true , runValidators: true }
+                updateFields,
+                { 
+                    new: true, 
+                    runValidators: true 
+                }
             ).exec();
             if (!item) {
                 return response.status(404).json({
