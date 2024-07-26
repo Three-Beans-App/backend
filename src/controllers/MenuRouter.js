@@ -135,6 +135,34 @@ router.post('/upload', upload.single('file'), (request, response) => {
 });
 
 
+// Route to add a new category
+router.post(
+    "/addCategory",
+    verifyJwt,
+    verifyAdmin,
+    async (request, response, next) => {
+        const { name } = request.body;
+        try {
+            const existingCategory = await CategoryModel.findOne({ name }).exec();
+            if (existingCategory) {
+                return response.status(400).json({
+                    message: "This category already exists"
+                });
+            }
+
+            const newCategory = new CategoryModel({ name });
+            await newCategory.save();
+
+            response.status(201).json({
+                message: "Category added successfully",
+                category: newCategory
+            });
+        } catch (error) {
+            next(error)
+        }
+    });
+
+
 // Route to update menu items
 router.patch(
     "/updateItem/:id", 
