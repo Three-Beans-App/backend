@@ -252,7 +252,7 @@ router.patch(
 
 // Route to delete a selected item
 router.delete(
-    "/deleteItem:id", 
+    "/deleteItem/:id", 
     verifyJwt, 
     verifyAdmin, 
     async (request, response, next) => {
@@ -273,7 +273,27 @@ router.delete(
 });
 
 
-
+// Route to delete a selected category
+router.delete(
+    "/deleteCategory/:id",
+    verifyJwt,
+    verifyAdmin,
+    async (request, response, next) => {
+        const { id } = request.params;
+        try {
+            const category = await CategoryModel.findByIdAndDelete(id).exec();
+            if (!category) {
+                return response.status(404).json({
+                    message: "Category not found."
+                });
+            }
+            response.status(200).json({
+                message: `Category ${category.name} deleted successfully.`
+            });
+        } catch (error) {
+            next(error)
+        } 
+});
 
 
 module.exports = router;
