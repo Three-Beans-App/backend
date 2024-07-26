@@ -133,9 +133,30 @@ router.patch("/updateItem/:id", verifyJwt, async (request, response, next) => {
             { new: true , runValidators: true }
         ).exec();
         if (!item) {
-            return response.status(404).json({ message: "Item not found" });
+            return response.status(404).json({
+                 message: "Item not found" 
+            });
         }
         response.status(200).json({ message: "Item updated successfully", item });
+    } catch (error) {
+        next(error);
+    }
+});
+
+
+// Route to delete a selected item
+router.delete("/deleteItem:id", verifyJwt, async (request, response, next) => {
+    const { id } = request.params;
+    try {
+        const item = await ItemModel.findByIdAndDelete(id).exec();
+        if (!item) {
+            return response.status(404).json({
+                message: "Item not found"
+            });
+        }
+        response.status(200).json({
+            message: `Item ${item.name} deleted successfully.`
+        });
     } catch (error) {
         next(error);
     }
