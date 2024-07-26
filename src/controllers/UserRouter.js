@@ -1,7 +1,8 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { UserModel } = require('../models/UserModel');
-const { comparePasswords, createJwt, verifyJwt, decodedJwt } = require('../utils/auth');
+const { createJwt, decodedJwt } = require('../utils/auth');
+const { verifyJwt } = require('../utils/middleware');
 const router = express.Router();
 
 // Base route to get all users

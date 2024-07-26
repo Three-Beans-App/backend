@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const { ItemModel, CategoryModel } = require('../models/ItemModel');
-const { verifyJwt } = require('../utils/auth');
+const { verifyJwt, verifyAdmin } = require('../utils/middleware');
 const router = express.Router();
 
 
@@ -94,23 +94,27 @@ router.get("/categories/:categoryId", async (request, response, next) => {
 
 
 // Route to create a new menu item
-router.post("/addItem", verifyJwt, async (request, response, next) => {
-    const { name, category, price, description } = request.body;
-    try {
-        const newItem = new ItemModel({
-            name,
-            category,
-            price,
-            description
-        });
-        await newItem.save();
-        response.status(201).json({
-            message: "Item added successfully",
-            item: newItem
-        });
-    } catch (error) {
-        next(error);
-    }
+router.post(
+    "/addItem", 
+    verifyJwt, 
+    verifyAdmin, 
+    async (request, response, next) => {
+        const { name, category, price, description } = request.body;
+        try {
+            const newItem = new ItemModel({
+                name,
+                category,
+                price,
+                description
+            });
+            await newItem.save();
+            response.status(201).json({
+                message: "Item added successfully",
+                item: newItem
+            });
+        } catch (error) {
+            next(error);
+        }
 });
 
 
@@ -123,43 +127,51 @@ router.post('/upload', upload.single('file'), (request, response) => {
 
 
 // Route to update menu items
-router.patch("/updateItem/:id", verifyJwt, async (request, response, next) => {
-    const { id } = request.params;
-    const { name, category, price, description } = request.body;
-    try {
-        const item = await ItemModel.findByIdAndUpdate(
-            id,
-            { name, category, price, description },
-            { new: true , runValidators: true }
-        ).exec();
-        if (!item) {
-            return response.status(404).json({
-                 message: "Item not found" 
-            });
+router.patch(
+    "/updateItem/:id", 
+    verifyJwt, 
+    verifyAdmin, 
+    async (request, response, next) => {
+        const { id } = request.params;
+        const { name, category, price, description } = request.body;
+        try {
+            const item = await ItemModel.findByIdAndUpdate(
+                id,
+                { name, category, price, description },
+                { new: true , runValidators: true }
+            ).exec();
+            if (!item) {
+                return response.status(404).json({
+                    message: "Item not found" 
+                });
+            }
+            response.status(200).json({ message: "Item updated successfully", item });
+        } catch (error) {
+            next(error);
         }
-        response.status(200).json({ message: "Item updated successfully", item });
-    } catch (error) {
-        next(error);
-    }
 });
 
 
 // Route to delete a selected item
-router.delete("/deleteItem:id", verifyJwt, async (request, response, next) => {
-    const { id } = request.params;
-    try {
-        const item = await ItemModel.findByIdAndDelete(id).exec();
-        if (!item) {
-            return response.status(404).json({
-                message: "Item not found"
+router.delete(
+    "/deleteItem:id", 
+    verifyJwt, 
+    verifyAdmin, 
+    async (request, response, next) => {
+        const { id } = request.params;
+        try {
+            const item = await ItemModel.findByIdAndDelete(id).exec();
+            if (!item) {
+                return response.status(404).json({
+                    message: "Item not found"
+                });
+            }
+            response.status(200).json({
+                message: `Item ${item.name} deleted successfully.`
             });
+        } catch (error) {
+            next(error);
         }
-        response.status(200).json({
-            message: `Item ${item.name} deleted successfully.`
-        });
-    } catch (error) {
-        next(error);
-    }
 });
 
 

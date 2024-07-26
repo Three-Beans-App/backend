@@ -1,5 +1,4 @@
-const bcrypt = require('bcryptjs');
-const jwt = require ('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -33,25 +32,7 @@ function validateJwt(jwtToValidate){
     return isJwtValid;
 }
 
-function verifyJwt(request, response, next) {
-    const token = request.headers.authorization && request.headers.authorization.split(" ")[1];
-    if (!token) {
-        return response.status(401).json({
-            message: "Authentication token is required"
-        });
-    }
 
-    jwt.verify(token, process.env.JWT_KEY, (error, decoded) => {
-        if (error) {
-            return response.status(401).json({
-                message: "Invalid token"
-            });
-        }
-
-        request.userId = decoded.id;
-        next();
-    });
-}
 
 function decodedJwt(jwtToDecode){
     let decodedData = jwt.verify(jwtToDecode, process.env.JWT_KEY);
@@ -61,6 +42,5 @@ function decodedJwt(jwtToDecode){
 module.exports = {
     createJwt,
     validateJwt,
-    verifyJwt,
     decodedJwt
 }
