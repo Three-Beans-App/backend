@@ -30,7 +30,7 @@ async function verifyAdmin(request, response, next) {
         const user = await UserModel.findById(request.userId).exec();
         if (!user || !user.admin) {
             return response.status(403).json({
-                message: "Access denied!"
+                message: "Access denied! must be an admin."
             });
         }
         next();
