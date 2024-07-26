@@ -127,14 +127,6 @@ router.post(
 });
 
 
-// Route to handle image uploads
-router.post('/upload', upload.single('file'), (request, response) => {
-    response.status(200).json({
-        message: "File uploaded successfully"
-    });
-});
-
-
 // Route to add a new category
 router.post(
     "/addCategory",
@@ -161,6 +153,14 @@ router.post(
             next(error)
         }
     });
+
+
+// Route to handle image uploads
+router.post('/upload', upload.single('file'), (request, response) => {
+    response.status(200).json({
+        message: "File uploaded successfully"
+    });
+});
 
 
 // Route to update menu items
@@ -271,6 +271,9 @@ router.delete(
             next(error);
         }
 });
+
+
+
 
 
 module.exports = router;
