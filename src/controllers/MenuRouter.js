@@ -209,6 +209,47 @@ router.patch(
 });
 
 
+// Route to update an existing category
+router.patch(
+    "/updateCategory/:id",
+    verifyJwt,
+    verifyAdmin,
+    async (request, response, next) => {
+        const { id } = request.params;
+        const { name } = request.body;
+        try {
+            const existingCategory = await CategoryModel.findOne({ name }).exec();
+            if (existingCategory) {
+                return response.status(400).json({
+                    message: "Category with this name already exists"
+                });
+            }
+
+            const category = await CategoryModel.findByIdAndUpdate(
+                id, 
+                { name },
+                {
+                    new: true,
+                    runValidators: true
+                }
+            ).exec();
+
+            if (!category) {
+                return response.status(404).json({
+                    message: "Category not found"
+                });
+            }
+
+            response.status(200).json({
+                message: "Category updated successfully",
+                category
+            });
+        } catch (error) {
+            next(error)
+        }
+    });
+
+
 // Route to delete a selected item
 router.delete(
     "/deleteItem:id", 
