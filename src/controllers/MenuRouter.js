@@ -24,7 +24,7 @@ router.get("/", async (request, response, next) => {
         // query database to find all item documents
         const items = await ItemModel.find({}).exec();
 
-        response.json({
+        response.status(200).json({
             // respond with each item
             result: items
         });
@@ -38,7 +38,7 @@ router.get("/", async (request, response, next) => {
 router.get("/categories", async (request, response, next) => {
     try{
         const categories = await CategoryModel.find({}).exec();
-        response.json({
+        response.status(200).json({
             result: categories
         });
     } catch (error) {
@@ -62,7 +62,7 @@ router.get("/:id", async (request, response, next) => {
             });
         }
 
-        response.json({
+        response.status(200).json({
             // respond with the matching item
             result: item
         });
@@ -84,7 +84,7 @@ router.get("/categories/:categoryId", async (request, response, next) => {
             });
         }
 
-        response.json({
+        response.status(200).json({
             result: items
         });
     } catch (error) {
