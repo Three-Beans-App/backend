@@ -88,6 +88,15 @@ describe('Menu Routes', () => {
         expect(response.body.message).toBe("Access denied! must be an admin.")
     });
 
+    it('should not add a category without a valid token', async () => {
+        const response = await request(app)
+            .post("/menu/addCategory")
+            .set('Authorization', 'Bearer badToken')
+            .send({ name: "newCategory" });
+        expect(response.statusCode).toEqual(401);
+        expect(response.body.message).toBe("Invalid token")
+    });
+
     it('should not add a category with an existing name', async () => {
         const response = await request(app)
             .post("/menu/addCategory")
