@@ -274,7 +274,7 @@ router.delete(
             const item = await ItemModel.findByIdAndDelete(id).exec();
             if (!item) {
                 return response.status(404).json({
-                    message: "Item not found"
+                    message: "Item not found."
                 });
             }
             response.status(200).json({

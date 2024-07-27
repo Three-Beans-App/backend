@@ -233,4 +233,41 @@ describe('Menu Routes', () => {
         expect(response.body.message).toBe("Category not found.");
     });
 
+
+    it('should delete a specified item', async () => {
+        const response = await request(app)
+            .delete(`/menu/deleteItem/${testItem._id}`)
+            .set('Authorization', `Bearer ${adminToken}`);
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.message).toBe(`Item Test Item deleted successfully.`);
+    });
+
+    it('should return an error if no item is found for ID', async () => {
+        const falseId = new mongoose.Types.ObjectId();
+        const response = await request(app)
+            .delete(`/menu/deleteItem/${falseId}`)
+            .set('Authorization', `Bearer ${adminToken}`);
+        expect(response.statusCode).toEqual(404);
+        expect(response.body.message).toBe("Item not found.")
+    });
+
+
+    it('should delete a specified category', async () => {
+        const response = await request(app)
+            .delete(`/menu/deleteCategory/${testCategory._id}`)
+            .set('Authorization', `Bearer ${adminToken}`);
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.message).toBe(`Category Test Category deleted successfully.`);
+    });
+
+    it('should return an error if no category is found for ID', async () => {
+        const falseId = new mongoose.Types.ObjectId();
+        const response = await request(app)
+            .delete(`/menu/deleteCategory/${falseId}`)
+            .set('Authorization', `Bearer ${adminToken}`);
+        expect(response.statusCode).toEqual(404);
+        expect(response.body.message).toBe("Category not found.")
+    });
+
+    
 });
