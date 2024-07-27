@@ -176,4 +176,11 @@ describe('Menu Routes', () => {
         expect(response.statusCode).toEqual(200);
         expect(response.body.result.name).toBe("Test Item")
     });
+
+    it('should return an error if an item ID is invalid', async () => {
+        const response = await request(app)
+            .get("/menu/falseId");
+        expect(response.statusCode).toEqual(400);
+        expect(response.body.message).toBe("Item not found.");
+    });
 });
