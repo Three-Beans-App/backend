@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const { ItemModel, CategoryModel } = require('../models/ItemModel');
-const { verifyJwt, verifyAdmin } = require('../utils/middleware');
+const { verifyJwt, verifyAdmin, validateObjectId } = require('../utils/middleware');
 const { default: mongoose } = require('mongoose');
 const router = express.Router();
 
@@ -49,20 +49,12 @@ router.get("/categories", async (request, response, next) => {
 
 
 // Route to get a single item by ID
-router.get("/:id", async (request, response, next) => {
+router.get("/:id", validateObjectId, async (request, response, next) => {
     try {
         // include itemID in the search params
-        const itemId = request.params.id;
-
-        // Check that itemId is a valid ObjectId
-        if(!mongoose.Types.ObjectId.isValid(itemId)) {
-            return response.status(400).json({
-                message: "Invalid item ID."
-            });
-        }
-        
+        const { id } = request.params;       
         // query database to find matching item for the ID
-        const item = await ItemModel.findById(itemId).exec();
+        const item = await ItemModel.findById(id).exec();
 
         if (!item) {
             // return a 404 if no item with the ID exists
@@ -82,15 +74,10 @@ router.get("/:id", async (request, response, next) => {
 
 
 // Route to get all items of a specific category
-router.get("/categories/:categoryId", async (request, response, next) => {
+router.get("/categories/:id", validateObjectId, async (request, response, next) => {
     try{
-        const categoryId = request.params.categoryId;
-        if(!mongoose.Types.ObjectId.isValid(categoryId)) {
-            return response.status(400).json({
-                message: "Invalid category ID."
-            });
-        }
-        const items = await ItemModel.find({ category: categoryId }).exec();
+        const { id } = request.params;
+        const items = await ItemModel.find({ category: id }).exec();
 
         if (items.length === 0) {
             return response.status(404).json({
@@ -188,17 +175,12 @@ router.post('/upload', upload.single('file'), (request, response) => {
 
 // Route to update menu items
 router.patch(
-    "/updateItem/:id", 
+    "/updateItem/:id",
+    validateObjectId, 
     verifyJwt, 
     verifyAdmin, 
     async (request, response, next) => {
         const { id } = request.params;
-
-        if(!mongoose.Types.ObjectId.isValid(id)) {
-            return response.status(400).json({
-                message: "Invalid item ID."
-            });
-        }
         const { name, category, price, description } = request.body;
         try {
             const updateFields = {};
@@ -241,16 +223,11 @@ router.patch(
 // Route to update an existing category
 router.patch(
     "/updateCategory/:id",
+    validateObjectId,
     verifyJwt,
     verifyAdmin,
     async (request, response, next) => {
         const { id } = request.params;
-
-        if(!mongoose.Types.ObjectId.isValid(id)) {
-            return response.status(400).json({
-                message: "Invalid category ID."
-            });
-        }
         const { name } = request.body;
         try {
             const existingCategory = await CategoryModel.findOne({ name }).exec();
@@ -287,17 +264,12 @@ router.patch(
 
 // Route to delete a selected item
 router.delete(
-    "/deleteItem/:id", 
+    "/deleteItem/:id",
+    validateObjectId,
     verifyJwt, 
     verifyAdmin, 
     async (request, response, next) => {
-        const { id } = request.params;
-
-        if(!mongoose.Types.ObjectId.isValid(id)) {
-            return response.status(400).json({
-                message: "Invalid item ID."
-            });
-        }        
+        const { id } = request.params;       
         try {
             const item = await ItemModel.findByIdAndDelete(id).exec();
             if (!item) {
@@ -317,15 +289,11 @@ router.delete(
 // Route to delete a selected category
 router.delete(
     "/deleteCategory/:id",
+    validateObjectId,
     verifyJwt,
     verifyAdmin,
     async (request, response, next) => {
         const { id } = request.params;
-        if(!mongoose.Types.ObjectId.isValid(id)) {
-            return response.status(400).json({
-                message: "Invalid category ID."
-            });
-        }
         try {
             const category = await CategoryModel.findByIdAndDelete(id).exec();
             if (!category) {
