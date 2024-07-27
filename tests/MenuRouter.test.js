@@ -204,4 +204,15 @@ describe('Menu Routes', () => {
         expect(response.body.result.length).toBe(1);
     });
 
+    it('should return an error if category ID is invalid', async () => {
+        const response = await request(app)
+            .get("/menu/categories/falseId");
+        expect(response.statusCode).toEqual(400);
+        expect(response.body.message).toBe("Invalid category ID.");
+    });
+
+    
+
+
+
 });
