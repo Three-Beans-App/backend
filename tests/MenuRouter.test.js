@@ -242,5 +242,12 @@ describe('Menu Routes', () => {
         expect(response.body.message).toBe(`Item Test Item deleted successfully.`);
     });
 
-
+    it('should return an error if no item is found for ID', async () => {
+        const falseId = new mongoose.Types.ObjectId();
+        const response = await request(app)
+            .delete(`/menu/deleteItem/${falseId}`)
+            .set('Authorization', `Bearer ${adminToken}`);
+        expect(response.statusCode).toEqual(404);
+        expect(response.body.message).toBe("Item not found.")
+    });
 });
