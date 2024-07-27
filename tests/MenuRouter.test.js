@@ -128,6 +128,20 @@ describe('Menu Routes', () => {
         expect(response.body.message).toBe("Item added successfully.");
     });
 
+    it('should not add an item when no category is found', async () => {
+        const response = await request(app)
+            .post("/menu/addItem")
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({
+                name: "New Item",
+                category: "False Category",
+                price: 100000,
+                description: "Test description"
+            });
+        expect(response.statusCode).toEqual(404);
+        expect(response.body.message).toBe("Category not found.");
+    });
+
     it('should not add an item with an existing name', async () => {
         const response = await request(app)
             .post("/menu/addItem")
