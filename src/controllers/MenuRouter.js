@@ -106,7 +106,16 @@ router.post(
             }).exec();
             if (!categoryDocument) {
                 return response.status(404).json({
-                    message: "Category not found"
+                    message: "Category not found."
+                });
+            }
+
+            const existingItem = await ItemModel.findOne({
+                name: name
+            });
+            if (existingItem) {
+                return response.status(400).json({
+                    message: "An item with this name already exists."
                 });
             }
 
@@ -118,7 +127,7 @@ router.post(
             });
             await newItem.save();
             response.status(201).json({
-                message: "Item added successfully",
+                message: "Item added successfully.",
                 item: newItem
             });
         } catch (error) {
