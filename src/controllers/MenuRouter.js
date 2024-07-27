@@ -189,7 +189,7 @@ router.patch(
                     name: category
                 }).exec();
                 if (!categoryDocument) {
-                    return response.status(400).json({
+                    return response.status(404).json({
                         message: "Category not found"
                     });
                 }
