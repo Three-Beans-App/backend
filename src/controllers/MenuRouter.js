@@ -67,7 +67,7 @@ router.get("/:id", async (request, response, next) => {
         if (!item) {
             // return a 404 if no item with the ID exists
             return response.status(404).json({
-                message: "Item not found"
+                message: "Item not found."
             });
         }
 
@@ -204,7 +204,7 @@ router.patch(
                 }).exec();
                 if (!categoryDocument) {
                     return response.status(404).json({
-                        message: "Category not found"
+                        message: "Category not found."
                     });
                 }
                 updateFields.category = categoryDocument._id;
