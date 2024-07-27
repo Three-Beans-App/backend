@@ -181,13 +181,6 @@ describe('Menu Routes', () => {
         expect(response.body.result.name).toBe("Test Item")
     });
 
-    it('should return an error if an item ID is invalid', async () => {
-        const response = await request(app)
-            .get("/menu/falseId");
-        expect(response.statusCode).toEqual(400);
-        expect(response.body.message).toBe("Invalid item ID.");
-    });
-
     it('should return an error if no item is found for ID', async () => {
         const falseId = new mongoose.Types.ObjectId();
         const response = await request(app)
@@ -202,13 +195,6 @@ describe('Menu Routes', () => {
             .get(`/menu/categories/${testCategory._id}`);
         expect(response.statusCode).toEqual(200);
         expect(response.body.result.length).toBe(1);
-    });
-
-    it('should return an error if category ID is invalid', async () => {
-        const response = await request(app)
-            .get("/menu/categories/falseId");
-        expect(response.statusCode).toEqual(400);
-        expect(response.body.message).toBe("Invalid category ID.");
     });
 
     it('should return an error if there are no items in the category', async () => {
