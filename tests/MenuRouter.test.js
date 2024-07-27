@@ -236,6 +236,15 @@ describe('Menu Routes', () => {
         expect(response.body.item.description).toBe("New description");
     });
 
-
+    it('should not update an item if no category is found', async () => {
+        const response = await request(app)
+            .patch(`/menu/updateItem/${testItem._id}`)
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({
+                category: "False Category"
+            });
+        expect(response.statusCode).toEqual(404);
+        expect(response.body.message).toBe("Category not found.");
+    });
 
 });
