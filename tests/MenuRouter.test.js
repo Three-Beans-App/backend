@@ -114,6 +114,7 @@ describe('Menu Routes', () => {
         expect(response.body.message).toBe("A category with this name already exists.")
     });
 
+
     it('should add a new item', async () => {
         const response = await request(app)
             .post("/menu/addItem")
@@ -156,6 +157,7 @@ describe('Menu Routes', () => {
         expect(response.body.message).toBe("An item with this name already exists.");
     });
 
+
     it('should get all items', async () => {
         const response = await request(app)
             .get("/menu")
@@ -163,12 +165,14 @@ describe('Menu Routes', () => {
         expect(response.body.result.length).toBe(1);
     });
 
+
     it('should get all categories', async () => {
         const response = await request(app)
             .get("/menu/categories")
         expect(response.statusCode).toEqual(200);
         expect(response.body.result.length).toBe(1);
     });
+
 
     it('should get item by ID', async () => {
         const response = await request(app)
@@ -181,6 +185,15 @@ describe('Menu Routes', () => {
         const response = await request(app)
             .get("/menu/falseId");
         expect(response.statusCode).toEqual(400);
-        expect(response.body.message).toBe("Item not found.");
+        expect(response.body.message).toBe("Invalid item ID.");
     });
+
+    it('should return an error if no item is found for ID', async () => {
+        const falseId = new mongoose.Types.ObjectId();
+        const response = await request(app)
+            .get(`/menu/${falseId}`);
+        expect(response.statusCode).toEqual(404);
+        expect(response.body.message).toBe("Item not found.")
+    });
+
 });
