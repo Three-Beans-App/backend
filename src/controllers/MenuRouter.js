@@ -85,6 +85,11 @@ router.get("/:id", async (request, response, next) => {
 router.get("/categories/:categoryId", async (request, response, next) => {
     try{
         const categoryId = request.params.categoryId;
+        if(!mongoose.Types.ObjectId.isValid(categoryId)) {
+            return response.status(400).json({
+                message: "Invalid category ID."
+            });
+        }
         const items = await ItemModel.find({ category: categoryId }).exec();
 
         if (items.length === 0) {
