@@ -196,4 +196,12 @@ describe('Menu Routes', () => {
         expect(response.body.message).toBe("Item not found.")
     });
 
+
+    it('should get all items of a specified category', async () => {
+        const response = await request(app)
+            .get(`/menu/categories/${testCategory._id}`);
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.result.length).toBe(1);
+    });
+
 });
