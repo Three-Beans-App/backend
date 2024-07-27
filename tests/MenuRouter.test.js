@@ -211,8 +211,12 @@ describe('Menu Routes', () => {
         expect(response.body.message).toBe("Invalid category ID.");
     });
 
-    
-
-
+    it('should return an error if there are no items in the category', async () => {
+        const emptyCategory = new CategoryModel({ name: "Empty Category" });
+        const response = await request(app)
+            .get(`/menu/categories/${emptyCategory._id}`);
+        expect(response.statusCode).toEqual(404);
+        expect(response.body.message).toBe("There are currently no items in this category.");
+    });
 
 });
