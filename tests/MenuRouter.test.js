@@ -125,7 +125,21 @@ describe('Menu Routes', () => {
                 description: "Test description"
             });
         expect(response.statusCode).toEqual(201);
-        expect(response.body.message).toBe("Item added successfully");
+        expect(response.body.message).toBe("Item added successfully.");
+    });
+
+    it('should not add an item with an existing name', async () => {
+        const response = await request(app)
+            .post("/menu/addItem")
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({
+                name: "Test Item",
+                category: "Test Category",
+                price: 99.99,
+                description: "Test description"
+            });
+        expect(response.statusCode).toEqual(400);
+        expect(response.body.message).toBe("An item with this name already exists.");
     });
 
     it('should get all items', async () => {
