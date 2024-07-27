@@ -4,6 +4,15 @@ const dotenv = require('dotenv');
 
 dotenv.config;
 
+function validateObjectId(request, response, next){
+    const { id } = request.params;
+        if(!mongoose.Types.ObjectId.isValid(id)) {
+            return response.status(400).json({
+                message: "Invalid ID."
+            });
+        }
+}
+
 function verifyJwt(request, response, next) {
     const token = request.headers.authorization && request.headers.authorization.split(" ")[1];
     if (!token) {
@@ -43,6 +52,7 @@ async function verifyAdmin(request, response, next) {
 
 
 module.exports = {
+    validateObjectId,
     verifyJwt,
     verifyAdmin
 }
