@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const { ItemModel, CategoryModel } = require('../models/ItemModel');
 const { verifyJwt, verifyAdmin } = require('../utils/middleware');
+const { default: mongoose } = require('mongoose');
 const router = express.Router();
 
 
@@ -52,6 +53,14 @@ router.get("/:id", async (request, response, next) => {
     try {
         // include itemID in the search params
         const itemId = request.params.id;
+
+        // Check that itemId is a valid ObjectId
+        if(!mongoose.Types.ObjectId.isValid(itemId)) {
+            return response.status(400).json({
+                message: "Invalid item ID."
+            });
+        }
+        
         // query database to find matching item for the ID
         const item = await ItemModel.findById(itemId).exec();
 
