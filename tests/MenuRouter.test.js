@@ -97,6 +97,14 @@ describe('Menu Routes', () => {
         expect(response.body.message).toBe("Invalid token")
     });
 
+    it('should not add a category without an existing token', async () => {
+        const response = await request(app)
+            .post("/menu/addCategory")
+            .send({ name: "newCategory" });
+        expect(response.statusCode).toEqual(401);
+        expect(response.body.message).toBe("Authentication token is required");
+    });
+
     it('should not add a category with an existing name', async () => {
         const response = await request(app)
             .post("/menu/addCategory")
