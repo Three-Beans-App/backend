@@ -204,7 +204,7 @@ router.patch(
                 }).exec();
                 if (!categoryDocument) {
                     return response.status(404).json({
-                        message: "Category not found"
+                        message: "Category not found."
                     });
                 }
                 updateFields.category = categoryDocument._id;

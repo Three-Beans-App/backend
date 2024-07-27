@@ -219,4 +219,23 @@ describe('Menu Routes', () => {
         expect(response.body.message).toBe("There are currently no items in this category.");
     });
 
+
+    it('should update an existing item', async () => {
+        const response = await request(app)
+            .patch(`/menu/updateItem/${testItem._id}`)
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({
+                name: "New Name",
+                price: 8.99,
+                description: "New description"
+            });
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.message).toBe("Item updated successfully");
+        expect(response.body.item.name).toBe("New Name");
+        expect(response.body.item.price).toBe(8.99);
+        expect(response.body.item.description).toBe("New description");
+    });
+
+
+
 });
