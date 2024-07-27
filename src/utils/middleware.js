@@ -1,6 +1,7 @@
 const { UserModel } = require('../models/UserModel');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const mongoose = require('mongoose');
 
 dotenv.config;
 
@@ -11,6 +12,7 @@ function validateObjectId(request, response, next){
                 message: "Invalid ID."
             });
         }
+        next();
 }
 
 function verifyJwt(request, response, next) {
