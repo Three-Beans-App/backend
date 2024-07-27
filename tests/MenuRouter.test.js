@@ -260,5 +260,14 @@ describe('Menu Routes', () => {
         expect(response.body.message).toBe(`Category Test Category deleted successfully.`);
     });
 
+    it('should return an error if no category is found for ID', async () => {
+        const falseId = new mongoose.Types.ObjectId();
+        const response = await request(app)
+            .delete(`/menu/deleteCategory/${falseId}`)
+            .set('Authorization', `Bearer ${adminToken}`);
+        expect(response.statusCode).toEqual(404);
+        expect(response.body.message).toBe("Category not found.")
+    });
+
     
 });
