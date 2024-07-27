@@ -193,6 +193,12 @@ router.patch(
     verifyAdmin, 
     async (request, response, next) => {
         const { id } = request.params;
+
+        if(!mongoose.Types.ObjectId.isValid(id)) {
+            return response.status(400).json({
+                message: "Invalid item ID."
+            });
+        }
         const { name, category, price, description } = request.body;
         try {
             const updateFields = {};
@@ -239,6 +245,12 @@ router.patch(
     verifyAdmin,
     async (request, response, next) => {
         const { id } = request.params;
+
+        if(!mongoose.Types.ObjectId.isValid(id)) {
+            return response.status(400).json({
+                message: "Invalid category ID."
+            });
+        }
         const { name } = request.body;
         try {
             const existingCategory = await CategoryModel.findOne({ name }).exec();
@@ -280,6 +292,12 @@ router.delete(
     verifyAdmin, 
     async (request, response, next) => {
         const { id } = request.params;
+
+        if(!mongoose.Types.ObjectId.isValid(id)) {
+            return response.status(400).json({
+                message: "Invalid item ID."
+            });
+        }        
         try {
             const item = await ItemModel.findByIdAndDelete(id).exec();
             if (!item) {
@@ -303,6 +321,11 @@ router.delete(
     verifyAdmin,
     async (request, response, next) => {
         const { id } = request.params;
+        if(!mongoose.Types.ObjectId.isValid(id)) {
+            return response.status(400).json({
+                message: "Invalid category ID."
+            });
+        }
         try {
             const category = await CategoryModel.findByIdAndDelete(id).exec();
             if (!category) {
