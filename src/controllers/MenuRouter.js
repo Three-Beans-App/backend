@@ -105,7 +105,7 @@ router.post(
                  name: category
             }).exec();
             if (!categoryDocument) {
-                return response.status(400).json({
+                return response.status(404).json({
                     message: "Category not found"
                 });
             }
@@ -138,7 +138,7 @@ router.post(
             const existingCategory = await CategoryModel.findOne({ name }).exec();
             if (existingCategory) {
                 return response.status(400).json({
-                    message: "This category already exists"
+                    message: "A category with this name already exists."
                 });
             }
 
