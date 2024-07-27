@@ -250,4 +250,15 @@ describe('Menu Routes', () => {
         expect(response.statusCode).toEqual(404);
         expect(response.body.message).toBe("Item not found.")
     });
+
+
+    it('should delete a specified category', async () => {
+        const response = await request(app)
+            .delete(`/menu/deleteCategory/${testCategory._id}`)
+            .set('Authorization', `Bearer ${adminToken}`);
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.message).toBe(`Category Test Category deleted successfully.`);
+    });
+
+    
 });
