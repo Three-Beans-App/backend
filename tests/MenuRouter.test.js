@@ -58,7 +58,7 @@ describe('Menu Routes', () => {
     
         userToken = createJwt(user);
     
-        testCategory = new CategoryModel({ name: "TestCategory" });
+        testCategory = new CategoryModel({ name: "Test Category" });
         await testCategory.save();
     
         testItem = new ItemModel({
@@ -88,13 +88,22 @@ describe('Menu Routes', () => {
         expect(response.body.message).toBe("Access denied! must be an admin.")
     });
 
+    it('should not add a category with an existing name', async () => {
+        const response = await request(app)
+            .post("/menu/addCategory")
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({ name: "Test Category" });
+        expect(response.statusCode).toEqual(400);
+        expect(response.body.message).toBe("A category with this name already exists.")
+    });
+
     it('should add a new item', async () => {
         const response = await request(app)
             .post("/menu/addItem")
             .set('Authorization', `Bearer ${adminToken}`)
             .send({
-                name: "TestItem",
-                category: "TestCategory",
+                name: "New Item",
+                category: "Test Category",
                 price: 9.99,
                 description: "Test description"
             });
