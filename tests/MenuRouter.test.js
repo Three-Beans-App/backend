@@ -160,7 +160,14 @@ describe('Menu Routes', () => {
         const response = await request(app)
             .get("/menu")
         expect(response.statusCode).toEqual(200);
-        expect(response.body.result.length).toBeGreaterThan(0);
+        expect(response.body.result.length).toBe(1);
+    });
+
+    it('should get all categories', async () => {
+        const response = await request(app)
+            .get("/menu/categories")
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.result.length).toBe(1);
     });
 
     it('should get item by ID', async () => {
