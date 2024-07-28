@@ -87,23 +87,6 @@ const orderSchema = new mongoose.Schema({
     }
 });
 
-async function calculateTotalPrice(items) {
-    let totalPrice = 0;
-    for (let item of items) {
-        let itemQuantity = item.quantity || 1;
-        let itemTotal = item.price * itemQuantity;
-        totalPrice += itemTotal;
-    }
-    return totalPrice;
-}
-
-orderSchema.pre('save', async function(next){
-    if (this.isNew || this.isModified('items')) {
-        this.totalPrice = await calculateTotalPrice(this.items);
-    }
-    next();
-});
-
 const OrderModel = mongoose.model('Order', orderSchema);
 
 module.exports = {
