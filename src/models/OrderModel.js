@@ -29,28 +29,28 @@ const orderItemSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    customisations: {
-        size: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Customisation',
-            required: false
-        },
-        milk: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Customisation',
-            required: false
-        },
-        sugar: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Customisation',
-            required: false
-        },
-        extras: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Customisation',
-            required: false
-        }]
-    }
+    // customisations: {
+    //     size: {
+    //         type: mongoose.Schema.Types.ObjectId,
+    //         ref: 'Customisation',
+    //         required: false
+    //     },
+    //     milk: {
+    //         type: mongoose.Schema.Types.ObjectId,
+    //         ref: 'Customisation',
+    //         required: false
+    //     },
+    //     sugar: {
+    //         type: mongoose.Schema.Types.ObjectId,
+    //         ref: 'Customisation',
+    //         required: false
+    //     },
+    //     extras: [{
+    //         type: mongoose.Schema.Types.ObjectId,
+    //         ref: 'Customisation',
+    //         required: false
+    //     }]
+    // }
 });
 
 
@@ -70,6 +70,23 @@ const orderSchema = new mongoose.Schema({
         enum: ["pending", "preparing", "ready", "completed", "cancelled"],
         default: "pending"
     }
+});
+
+async function calculateTotalPrice(items) {
+    let totalPrice = 0;
+    for (let item of items) {
+        let itemQuantity = item.quantity || 1;
+        let itemTotal = item.price * itemQuantity;
+        totalPrice += itemTotal;
+    }
+    return totalPrice;
+}
+
+orderSchema.pre('save', async function(next){
+    if (this.isNew || this.isModified('items')) {
+        this.totalPrice = await calculateTotalPrice(this.items);
+    }
+    next();
 });
 
 const OrderModel = mongoose.model('Order', orderSchema);
