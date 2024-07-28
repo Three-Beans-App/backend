@@ -116,7 +116,7 @@ router.post("/", async (request, response, next) => {
         }));
 
         const totalPrice = await calculateTotalPrice(orderItems);
-        
+
         const orderdata = {
             items: orderItems,
             totalPrice: totalPrice,
@@ -143,6 +143,45 @@ router.post("/", async (request, response, next) => {
     } catch (error) {
         next(error);
     }
+});
+
+
+// Route to update order status
+router.patch(
+    "/status/:id",
+    validateObjectId,
+    verifyJwt,
+    verifyAdmin,
+    async (request, response, next) => {
+        try {
+            const { id } = request.params;
+            const { status } = request.body;
+
+            const validStatuses = ["pending", "preparing", "ready", "completed", "cancelled"];
+            if (!validStatuses.includes(status)) {
+                return response.status(400).json({
+                    message: "Invalid status."
+                });
+            }
+            const order = await OrderModel.findByIdAndUpdate(
+                id,
+                { status },
+                { new: true }
+            );
+
+            if (!order) {
+                return response.status(404).json({
+                    message: "Order not found.",
+                });
+            }
+
+            response.status(200).json({
+                message: "Order status updated successfully.",
+                status
+            });
+        } catch (error) {
+            next(error);
+        }
 });
 
 
