@@ -1,7 +1,6 @@
 const express = require('express');
 const { OrderModel } = require('../models/OrderModel');
 const { verifyJwt, validateObjectId, verifyAdmin } = require('../utils/middleware');
-const { toNamespacedPath } = require('path');
 const router = express.Router();
 
 
@@ -81,3 +80,6 @@ router.get(
             next(error);
         }
 });
+
+
+module.exports = router;
