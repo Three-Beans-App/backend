@@ -40,3 +40,23 @@ router.get(
             next(error);
         }
 });
+
+
+// Route to view orders based on status
+router.get(
+    "/status/:status",
+    verifyJwt,
+    verifyAdmin,
+    async (request, response, next) => {
+        try {
+            const { status } = request.params;
+            const orders = await OrderModel.find({
+                status 
+            }).sort({
+                date: -1
+            }).exec();
+            response.status(200).json({ orders });
+        } catch (error) {
+            next(error);
+        }
+});
