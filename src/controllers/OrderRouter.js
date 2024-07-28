@@ -60,3 +60,24 @@ router.get(
             next(error);
         }
 });
+
+
+// Route to view all ongoing orders
+router.get(
+    "/active",
+    verifyJwt,
+    verifyAdmin,
+    async (request, response, next) => {
+        try {
+            const orders = await OrderModel.find({
+                status: {
+                    $nin: ['completed', 'cancelled']
+                }
+            }).sort({
+                date: 1
+            }).exec();
+            response.status(200).json({ orders });
+        } catch (error) {
+            next(error);
+        }
+});
