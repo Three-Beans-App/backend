@@ -19,6 +19,9 @@ app.use("/users", userRouter);
 const menuRouter = require('./controllers/MenuRouter.js');
 app.use("/menu", menuRouter);
 
+const orderRouter = require('./controllers/OrderRouter.js');
+app.use("/orders", orderRouter);
+
 
 app.get("*", (request, response, next) => {
     response.status(404).json({
