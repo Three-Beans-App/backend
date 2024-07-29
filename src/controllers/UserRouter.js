@@ -26,7 +26,7 @@ router.post("/signup", async (request, response, next) => {
         const existingUser = await UserModel.findOne({ email }).exec();
         if (existingUser) {
             return response.status(400).json({
-                message: "It looks like you've already made a profile with this email."
+                message: "A profile with this email already exists."
             });
         }
         
@@ -66,10 +66,10 @@ router.post("/login", async (request, response, next) => {
         // Validate user by checking database for an email
         const user = await UserModel.findOne({ email }).exec();
         if (!user) {
-            return response.status(401).json({
+            return response.status(404).json({
                 status: "failed",
                 data: [],
-                message: "Sorry we can't find this email in our system."
+                message: "Email not found."
             });
         }
         // Authenticate user by checking against user.password
