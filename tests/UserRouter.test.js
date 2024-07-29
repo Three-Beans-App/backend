@@ -78,7 +78,7 @@ describe('User Routes', () => {
                     birthday: "2000-01-01"
                 });
             expect(response.statusCode).toEqual(400);
-            expect(response.body.message).toBe("It looks like you've already made a profile with this email.");
+            expect(response.body.message).toBe("A profile with this email already exists.");
         });
     });
 
@@ -114,8 +114,8 @@ describe('User Routes', () => {
                     email: "random@email.com",
                     password: "password"
                 });
-            expect(response.statusCode).toEqual(401);
-            expect(response.body.message).toBe("Sorry we can't find this email in our system.");
+            expect(response.statusCode).toEqual(404);
+            expect(response.body.message).toBe("Email not found.");
         });
     });
 
