@@ -1,8 +1,6 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const { createJwt, validateJwt } = require('../src/utils/auth');
-const { all } = require('../src/controllers/OrderRouter');
-const { ItemModel } = require('../src/models/ItemModel');
 
 dotenv.config();
 
