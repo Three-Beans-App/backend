@@ -7,6 +7,20 @@ const mongoose = require('mongoose');
 dotenv.config();
 
 describe('Middleware', () => {
+    beforeAll(async () => {
+        await mongoose.connect('mongodb://localhost:27017/testdb3', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+    });
+
+    afterAll(async () => {
+        await mongoose.connection.close();
+    });
+
+    afterEach(async () => {
+        await UserModel.deleteMany({});
+    });
 
     describe('validateObjectId', () => {
         it('should call next if ID is valid', () => {
@@ -96,5 +110,52 @@ describe('Middleware', () => {
     });
 
 
+    describe('verifyAdmin', () => {
+        it('should call next if the user has admin status', async () => {
+            const userId = new mongoose.Types.ObjectId().toString();
+            const user = new UserModel({
+                _id: userId,
+                name: "Admin User", 
+                email: "admin@test.com",
+                password: "password",
+                admin: true
+            });
+            await user.save();
 
+            const request = { userId };
+            const response = {};
+            const next = jest.fn();
+
+            await verifyAdmin(request, response, next);
+
+            expect(next).toHaveBeenCalled();
+        });
+
+        it('should return an error if the user is not an admin', async () => {
+            const userId = new mongoose.Types.ObjectId().toString();
+            const user = new UserModel({
+                _id: userId,
+                name: "Test User",
+                email: "user@test.com",
+                password: "password",
+                admin: false
+            });
+            await user.save();
+
+            const request = { userId };
+            const response = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+            const next = jest.fn();
+
+            await verifyAdmin(request, response, next);
+
+            expect(response.status).toHaveBeenCalledWith(403);
+            expect(response.json).toHaveBeenCalledWith({
+                message: "Access denied! must be an admin."
+            });
+            expect(next).not.toHaveBeenCalled();
+        });
+    });
 });
