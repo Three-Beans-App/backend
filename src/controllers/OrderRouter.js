@@ -93,7 +93,7 @@ router.get(
 });
 
 
-// ROute for users to create orders
+// Route for users to create orders
 router.post("/", async (request, response, next) => {
     const {userId, guestUser, items } = request.body;
 
@@ -182,6 +182,30 @@ router.patch(
         } catch (error) {
             next(error);
         }
+});
+
+
+// Route to delete an order
+router.delete(
+    "/deleteOrder/:id",
+    validateObjectId,
+    verifyJwt,
+    verifyAdmin,
+    async (request, response, next) => {
+        const { id } = request.params;
+        try {
+            const order = await OrderModel.findByIdAndDelete(id).exec();
+            if (!order) {
+                return response.status(404).json({
+                    message: "Order not found."
+                });
+            }
+            response.status(200).json({
+                message: "Order deleted succesfully."
+            });
+        } catch (error) {
+            next(error)
+        } 
 });
 
 
