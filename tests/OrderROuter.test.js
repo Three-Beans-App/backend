@@ -97,5 +97,20 @@ describe('Order Router', () => {
             expect(response.body.message).toBe("Order placed successfully.");
             expect(response.body.order).toHaveProperty('_id');
         });
+
+        it('should create a new order for a guest user', async () => {
+            const response = await request(app)
+                .post("/orders")
+                .send({
+                    guestUser: "Guest User",
+                    items: [{
+                        itemId: testItem._id,
+                        quantity: 2
+                    }]
+                });
+            expect(response.statusCode).toEqual(201);
+            expect(response.body.message).toBe("Order placed successfully.");
+            expect(response.body.order).toHaveProperty('_id');
+        });
     });
 });
