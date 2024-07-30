@@ -1,22 +1,7 @@
 const express = require('express');
-const multer = require('multer');
-const path = require('path');
 const { ItemModel, CategoryModel } = require('../models/ItemModel');
 const { verifyJwt, verifyAdmin, validateObjectId } = require('../utils/middleware');
-const { default: mongoose } = require('mongoose');
 const router = express.Router();
-
-
-const storage = multer.diskStorage({
-    destination: (request, file, callback) => {
-        callback(null, path.join(_dirname, '../public'));
-    },
-    filename: (request, file, callback) => {
-        callback(null, `${request.body.filename}${path.extname(file.originalname)}`);
-    }
-});
-
-const upload = multer({ storage });
 
 
 // Base route to get all items
@@ -100,7 +85,7 @@ router.post(
     verifyJwt, 
     verifyAdmin, 
     async (request, response, next) => {
-        const { name, category, price, description } = request.body;
+        const { name, category, price, description, image } = request.body;
         try {
             const categoryDocument = await CategoryModel.findOne({
                  name: category
@@ -124,7 +109,8 @@ router.post(
                 name,
                 category: categoryDocument._id,
                 price,
-                description
+                description,
+                image
             });
             await newItem.save();
             response.status(201).json({
@@ -165,14 +151,6 @@ router.post(
     });
 
 
-// Route to handle image uploads
-router.post('/upload', upload.single('file'), (request, response) => {
-    response.status(200).json({
-        message: "File uploaded successfully"
-    });
-});
-
-
 // Route to update menu items
 router.patch(
     "/updateItem/:id",
@@ -181,7 +159,7 @@ router.patch(
     verifyAdmin, 
     async (request, response, next) => {
         const { id } = request.params;
-        const { name, category, price, description } = request.body;
+        const { name, category, price, description, image } = request.body;
         try {
             const updateFields = {};
 
@@ -199,6 +177,7 @@ router.patch(
             }
             if (price !== undefined) updateFields.price = price;
             if (description) updateFields.description = description;
+            if (image) updateFields.image = image;
 
             const item = await ItemModel.findByIdAndUpdate(
                 id,
