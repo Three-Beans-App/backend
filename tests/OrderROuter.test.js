@@ -150,6 +150,17 @@ describe('Order Router', () => {
                 .set('Authorization', `Bearer ${adminToken}`);
             expect(response.statusCode).toEqual(200);
             expect(response.body.result.length).toBe(1);
-        })
+        });
     });
+
+
+    describe('GET /orders/user/:id', () => {
+        it('should get all orders for a specified user', async () => {
+            const response = await request(app)
+                .get(`/orders/user/${testUser._id}`)
+                .set('Authorization', `Bearer ${userToken}`);
+            expect(response.statusCode).toEqual(200);
+            expect(response.body.result.length).toBe(1);
+        });
+    })    
 });
