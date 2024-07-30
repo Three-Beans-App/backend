@@ -60,12 +60,12 @@ router.get(
     async (request, response, next) => {
         try {
             const { status } = request.params;
-            const orders = await OrderModel.find({
+            const result = await OrderModel.find({
                 status 
             }).sort({
                 date: -1
             }).exec();
-            response.status(200).json({ orders });
+            response.status(200).json({ result });
         } catch (error) {
             next(error);
         }

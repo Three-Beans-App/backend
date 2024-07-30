@@ -149,6 +149,7 @@ describe('Order Router', () => {
                 .get("/orders")
                 .set('Authorization', `Bearer ${adminToken}`);
             expect(response.statusCode).toEqual(200);
+            expect(response.body.result).toBeInstanceOf(Array);
             expect(response.body.result.length).toBe(1);
         });
     });
@@ -160,7 +161,21 @@ describe('Order Router', () => {
                 .get(`/orders/user/${testUser._id}`)
                 .set('Authorization', `Bearer ${userToken}`);
             expect(response.statusCode).toEqual(200);
+            expect(response.body.result).toBeInstanceOf(Array);
             expect(response.body.result.length).toBe(1);
         });
-    })    
+    });
+    
+    
+    describe('GET /orders/status/:id', () => {
+        it('should get all orders from a specified status', async () => {
+            const response = await request(app)
+                .get("/orders/status/pending")
+                .set('Authorization', `Bearer ${adminToken}`);
+            expect(response.statusCode).toEqual(200);
+            expect(response.body.result).toBeInstanceOf(Array);
+            expect(response.body.result.length).toBe(1);
+            expect(response.body.result[0].status).toBe("pending");
+        });
+    });
 });
