@@ -23,12 +23,12 @@ router.get(
     async (request, response, next) => {
         try {
             const { id } = request.params;
-            const orders = await OrderModel.find({
+            const result = await OrderModel.find({
                 user: id
             }).sort({
                 date: -1
             }).exec();
-            response.status(200).json({ orders });
+            response.status(200).json({ result });
         } catch (error) {
             next(error);
         }
@@ -60,12 +60,12 @@ router.get(
     async (request, response, next) => {
         try {
             const { status } = request.params;
-            const orders = await OrderModel.find({
+            const result = await OrderModel.find({
                 status 
             }).sort({
                 date: -1
             }).exec();
-            response.status(200).json({ orders });
+            response.status(200).json({ result });
         } catch (error) {
             next(error);
         }
@@ -79,14 +79,14 @@ router.get(
     verifyAdmin,
     async (request, response, next) => {
         try {
-            const orders = await OrderModel.find({
+            const result = await OrderModel.find({
                 status: {
                     $nin: ['completed', 'cancelled']
                 }
             }).sort({
                 date: 1
             }).exec();
-            response.status(200).json({ orders });
+            response.status(200).json({ result });
         } catch (error) {
             next(error);
         }

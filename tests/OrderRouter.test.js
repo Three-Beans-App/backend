@@ -149,7 +149,83 @@ describe('Order Router', () => {
                 .get("/orders")
                 .set('Authorization', `Bearer ${adminToken}`);
             expect(response.statusCode).toEqual(200);
+            expect(response.body.result).toBeInstanceOf(Array);
             expect(response.body.result.length).toBe(1);
-        })
+        });
+    });
+
+
+    describe('GET /orders/user/:id', () => {
+        it('should get all orders for a specified user', async () => {
+            const response = await request(app)
+                .get(`/orders/user/${testUser._id}`)
+                .set('Authorization', `Bearer ${userToken}`);
+            expect(response.statusCode).toEqual(200);
+            expect(response.body.result).toBeInstanceOf(Array);
+            expect(response.body.result.length).toBe(1);
+        });
+    });
+    
+    
+    describe('GET /orders/status/:id', () => {
+        it('should get all orders from a specified status', async () => {
+            const response = await request(app)
+                .get("/orders/status/pending")
+                .set('Authorization', `Bearer ${adminToken}`);
+            expect(response.statusCode).toEqual(200);
+            expect(response.body.result).toBeInstanceOf(Array);
+            expect(response.body.result.length).toBe(1);
+            expect(response.body.result[0].status).toBe("pending");
+        });
+    });
+
+
+    describe('GET /orders/active', () => {
+        it('should get all active orders', async () => {
+            const response = await request(app)
+                .get("/orders/active")
+                .set('Authorization', `Bearer ${adminToken}`);
+            expect(response.statusCode).toEqual(200);
+            expect(response.body.result).toBeInstanceOf(Array);
+            expect(response.body.result.length).toBe(1);
+        });
+    });
+
+
+    describe('PATCH /orders/status/:id', () => {
+        it('should update the status of a specfied order', async () => {
+            const response = await request(app)
+                .patch(`/orders/status/${testOrder._id}`)
+                .set('Authorization', `Bearer ${adminToken}`)
+                .send({
+                    status: "preparing" 
+                });
+            expect(response.statusCode).toEqual(200);
+            expect(response.body.message).toBe("Order status updated successfully.");
+            expect(response.body.status).toBe("preparing");
+        });
+
+        it('should return an error if the status is invalid', async () => {
+            const response = await request(app)
+                .patch(`/orders/status/${testOrder._id}`)
+                .set('Authorization', `Bearer ${adminToken}`)
+                .send({
+                    status: "Invalid Status"
+                });
+            expect(response.statusCode).toEqual(400);
+            expect(response.body.message).toBe("Invalid status.");
+        });
+
+        it('should return an error if the order does not exist', async () => {
+            const falseOrder = new mongoose.Types.ObjectId();
+            const response = await request(app)
+                .patch(`/orders/status/${falseOrder}`)
+                .set('Authorization', `Bearer ${adminToken}`)
+                .send({
+                    status: "preparing"
+                });
+            expect(response.statusCode).toEqual(404);
+            expect(response.body.message).toBe("Order not found.")
+        });
     });
 });
