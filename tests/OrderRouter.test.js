@@ -214,6 +214,18 @@ describe('Order Router', () => {
                 });
             expect(response.statusCode).toEqual(400);
             expect(response.body.message).toBe("Invalid status.");
-        })
+        });
+
+        it('should return an error if the order does not exist', async () => {
+            const falseOrder = new mongoose.Types.ObjectId();
+            const response = await request(app)
+                .patch(`/orders/status/${falseOrder}`)
+                .set('Authorization', `Bearer ${adminToken}`)
+                .send({
+                    status: "preparing"
+                });
+            expect(response.statusCode).toEqual(404);
+            expect(response.body.message).toBe("Order not found.")
+        });
     });
 });
