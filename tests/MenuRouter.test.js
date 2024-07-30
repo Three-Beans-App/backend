@@ -13,7 +13,7 @@ beforeAll(async () => {
         useNewUrlParser: true,
         useUnifiedTopology: true
     });
-    console.log("Connected to test database");
+    console.log("Connected to test database.");
 
 
 });
