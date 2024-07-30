@@ -141,4 +141,15 @@ describe('Order Router', () => {
             expect(response.body.message).toBe("User or guest information is required to place an order.");
         })
     });
+
+
+    describe('GET /orders', () => {
+        it('should get all orders', async () => {
+            const response = await request(app)
+                .get("/orders")
+                .set('Authorization', `Bearer ${adminToken}`);
+            expect(response.statusCode).toEqual(200);
+            expect(response.body.result.length).toBe(1);
+        })
+    });
 });

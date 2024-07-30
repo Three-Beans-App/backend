@@ -42,10 +42,10 @@ router.get(
     verifyAdmin,
     async (request, response, next) => {
         try {
-            const orders = await OrderModel.find({}).sort({
+            const result = await OrderModel.find({}).sort({
                 date: -1
             }).exec();
-            response.status(200).json({ orders });
+            response.status(200).json({ result });
         } catch (error) {
             next(error);
         }
