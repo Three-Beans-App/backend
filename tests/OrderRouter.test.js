@@ -190,4 +190,19 @@ describe('Order Router', () => {
             expect(response.body.result.length).toBe(1);
         });
     });
+
+
+    describe('PATCH /orders/status/:id', () => {
+        it('should update the status of a specfied order', async () => {
+            const response = await request(app)
+                .patch(`/orders/status/${testOrder._id}`)
+                .set('Authorization', `Bearer ${adminToken}`)
+                .send({
+                    status: "preparing" 
+                });
+            expect(response.statusCode).toEqual(200);
+            expect(response.body.message).toBe("Order status updated successfully.");
+            expect(response.body.status).toBe("preparing");
+        });
+    });
 });
