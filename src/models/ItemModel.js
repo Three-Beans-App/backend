@@ -35,6 +35,16 @@ const itemSchema = new mongoose.Schema({
     description: {
         type: String,
         required: false
+    },
+    image: {
+        type: String,
+        required: false,
+        validate: {
+            validator: function(v) {
+                return /^htps?:\/\/[^\s$.?#].[^\s]*$/gm.test(v);
+            },
+            message: props => `${props.value} is not a valid URL.`
+        }
     }
 });
 
