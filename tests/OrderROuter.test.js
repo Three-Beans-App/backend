@@ -127,5 +127,18 @@ describe('Order Router', () => {
             expect(response.statusCode).toEqual(404);
             expect(response.body.message).toBe(`Item not found: ${invalidItemId}`);
         });
+
+        it('should return an error if user or guest information is not provided', async () => {
+            const response = await request(app)
+                .post("/orders")
+                .send({
+                    items: [{
+                        itemId: testItem._id,
+                        quantity: 3
+                    }]
+                });
+            expect(response.statusCode).toEqual(400);
+            expect(response.body.message).toBe("User or guest information is required to place an order.");
+        })
     });
 });
