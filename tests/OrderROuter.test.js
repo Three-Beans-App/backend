@@ -112,5 +112,20 @@ describe('Order Router', () => {
             expect(response.body.message).toBe("Order placed successfully.");
             expect(response.body.order).toHaveProperty('_id');
         });
+
+        it('should return an error if an item is not found', async () => {
+            const invalidItemId = new mongoose.Types.ObjectId();
+            const response = await request(app)
+                .post("/orders")
+                .send({
+                    userId: testUser._id,
+                    items: [{
+                        itemId: invalidItemId,
+                        quantity: 1
+                    }]
+                });
+            expect(response.statusCode).toEqual(404);
+            expect(response.body.message).toBe(`Item not found: ${invalidItemId}`);
+        });
     });
 });
