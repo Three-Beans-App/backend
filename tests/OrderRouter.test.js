@@ -204,5 +204,16 @@ describe('Order Router', () => {
             expect(response.body.message).toBe("Order status updated successfully.");
             expect(response.body.status).toBe("preparing");
         });
+
+        it('should return an error if the status is invalid', async () => {
+            const response = await request(app)
+                .patch(`/orders/status/${testOrder._id}`)
+                .set('Authorization', `Bearer ${adminToken}`)
+                .send({
+                    status: "Invalid Status"
+                });
+            expect(response.statusCode).toEqual(400);
+            expect(response.body.message).toBe("Invalid status.");
+        })
     });
 });
