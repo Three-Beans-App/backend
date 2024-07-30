@@ -178,4 +178,16 @@ describe('Order Router', () => {
             expect(response.body.result[0].status).toBe("pending");
         });
     });
+
+
+    describe('GET /orders/active', () => {
+        it('should get all active orders', async () => {
+            const response = await request(app)
+                .get("/orders/active")
+                .set('Authorization', `Bearer ${adminToken}`);
+            expect(response.statusCode).toEqual(200);
+            expect(response.body.result).toBeInstanceOf(Array);
+            expect(response.body.result.length).toBe(1);
+        });
+    });
 });
