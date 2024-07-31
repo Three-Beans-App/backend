@@ -175,6 +175,15 @@ describe('Favourite Router', () => {
             expect(response.statusCode).toEqual(200);
             expect(response.body.message).toBe("Favourite deleted successfully.");
         });
+
+        it('should return an error if no favourite is found from request params', async () => {
+            const falseFavourite = new mongoose.Types.ObjectId();
+            const response = await request(app)
+                .delete(`/favourites/${falseFavourite}`)
+                .set('Authorization', `Bearer ${token}`);
+            expect(response.statusCode).toEqual(404);
+            expect(response.body.message).toBe("Favourite not found.");
+        })
     });
 });
 
