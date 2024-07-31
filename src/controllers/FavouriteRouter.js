@@ -115,6 +115,29 @@ router.patch(
 });
 
 
+// Route to delete favourite
+router.delete(
+    "/:id",
+    validateObjectId,
+    verifyJwt,
+    async (request, response, next) => {
+        const { id } = request.params;
+        try {
+            const favourite = await FavouriteModel.findByIdAndDelete(id).exec();
+            if (!favourite) {
+                return response.status(404).json({
+                    message: "Favourite not found."
+                });
+            }
+            response.status(200).json({
+                message: "Favourite deleted successfully."
+            });
+        } catch (error) {
+            next(error)
+        } 
+});
+
+
 module.exports = router;
 
 
