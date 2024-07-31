@@ -23,6 +23,7 @@ router.get(
 });
 
 
+// Route to add a new favourite
 router.post(
     "/",
     verifyJwt,
@@ -61,6 +62,52 @@ router.post(
             response.status(201).json({
                 message: "Favourite added successfully.",
                 favourite: newFavourite
+            });
+        } catch (error) {
+            next(error);
+        }
+});
+
+
+// Route to update existing favourite
+router.patch(
+    "/:id",
+    validateObjectId,
+    verifyJwt,
+    async (request, response, next) => {
+        const { id } = request.params;
+        const { itemId } = request.body;
+
+        try {
+            const item = await ItemModel.findById(itemId);
+            if (!item) {
+                return response.status(404).json({
+                    message: "Item not found."
+                });
+            }
+
+            const updatedFavourite = await FavouriteModel.findByIdAndUpdate(
+                id,
+                {
+                    item: {
+                        itemId: item._id,
+                        name: item.name,
+                        category: item.category,
+                        price: item.price
+                    }
+                },
+                { new: true }
+            ).exec();
+
+            if (!updatedFavourite) {
+                return response(404).json({
+                    message: "Favourite not found."
+                });
+            }
+
+            response.status(200).json({
+                message: "Favourite updated successfully.",
+                favourite: updatedFavourite
             });
         } catch (error) {
             next(error);
