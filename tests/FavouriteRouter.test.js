@@ -114,5 +114,17 @@ describe('Favourite Router', () => {
             expect(response.body.message).toBe("Item is already in your favourites.")
         })
     });
+
+
+    describe('GET /favourites/:id', () => {
+        it('should get all favourites for a specific user', async () => {
+            const response = await request(app)
+                .get(`/favourites/${testUser._id}`)
+                .set('Authorization', `Bearer ${token}`)
+            expect(response.statusCode).toEqual(200);
+            expect(response.body.result.length).toBe(1);
+            expect(response.body.result[0]._id).toBe(`${testFavourite._id}`);
+        })
+    })
 });
 
