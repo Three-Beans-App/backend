@@ -101,6 +101,18 @@ describe('Favourite Router', () => {
             expect(response.statusCode).toEqual(404);
             expect(response.body.message).toBe("Item not found.")
         });
+
+        it('should not create a favourite which already exists', async () => {
+            const response = await request(app)
+                .post("/favourites")
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    userId: testUser._id,
+                    itemId: testItem
+                });
+            expect(response.statusCode).toEqual(400);
+            expect(response.body.message).toBe("Item is already in your favourites.")
+        })
     });
 });
 
