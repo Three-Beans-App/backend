@@ -152,6 +152,18 @@ describe('Favourite Router', () => {
             expect(response.statusCode).toEqual(404);
             expect(response.body.message).toBe("Item not found.");
         });
+
+        it('should return an error if no favourite is found from request params', async () => {
+            const falseFavourite = new mongoose.Types.ObjectId();
+            const response = await request(app)
+                .patch(`/favourites/${falseFavourite}`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    itemId: testItem._id
+                });
+            expect(response.statusCode).toEqual(404);
+            expect(response.body.message).toBe("Favourite not found.");
+        });
     });
 });
 

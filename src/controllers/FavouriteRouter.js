@@ -100,7 +100,7 @@ router.patch(
             ).exec();
 
             if (!updatedFavourite) {
-                return response(404).json({
+                return response.status(404).json({
                     message: "Favourite not found."
                 });
             }
