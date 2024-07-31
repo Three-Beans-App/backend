@@ -22,6 +22,9 @@ app.use("/menu", menuRouter);
 const orderRouter = require('./controllers/OrderRouter.js');
 app.use("/orders", orderRouter);
 
+const favouriteRouter = require('./controllers/FavouriteRouter.js');
+app.use("/favourites", favouriteRouter);
+
 
 app.get("*", (request, response, next) => {
     response.status(404).json({

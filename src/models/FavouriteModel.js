@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { UserModel } = require('./UserModel.js');
-const { ItemModel, CustomisationModel, CategoryModel } = require('./ItemModel.js');
+const { ItemModel, CategoryModel } = require('./ItemModel.js');
 
 
 const favouriteItemSchema = new mongoose.Schema({
@@ -54,10 +54,10 @@ const favouriteSchema = new mongoose.Schema({
         required: true
     },
     item: favouriteItemSchema,
-    totalPrice: {
-        type: Number,
-        required: true
-    }
+    // totalPrice: {
+    //     type: Number,
+    //     required: true
+    // }
 });
 
 const FavouriteModel = mongoose.model('Favourite', favouriteSchema);
