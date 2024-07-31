@@ -120,7 +120,7 @@ describe('Favourite Router', () => {
         it('should get all favourites for a specific user', async () => {
             const response = await request(app)
                 .get(`/favourites/${testUser._id}`)
-                .set('Authorization', `Bearer ${token}`)
+                .set('Authorization', `Bearer ${token}`);
             expect(response.statusCode).toEqual(200);
             expect(response.body.result.length).toBe(1);
             expect(response.body.result[0]._id).toBe(`${testFavourite._id}`);
@@ -163,6 +163,17 @@ describe('Favourite Router', () => {
                 });
             expect(response.statusCode).toEqual(404);
             expect(response.body.message).toBe("Favourite not found.");
+        });
+    });
+
+
+    describe('DELETE /favourites/:id', () => {
+        it('should delete a specified favourite', async () => {
+            const response = await request(app)
+                .delete(`/favourites/${testFavourite._id}`)
+                .set('Authorization', `Bearer ${token}`);
+            expect(response.statusCode).toEqual(200);
+            expect(response.body.message).toBe("Favourite deleted successfully.");
         });
     });
 });
