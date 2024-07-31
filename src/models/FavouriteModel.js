@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { UserModel } = require('./UserModel.js');
-const { ItemModel, CustomisationModel, CategoryModel } = require('./ItemModel.js');
+const { ItemModel, CategoryModel } = require('./ItemModel.js');
 
 
 const favouriteItemSchema = new mongoose.Schema({

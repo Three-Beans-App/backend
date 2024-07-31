@@ -72,10 +72,9 @@ const itemSchema = new mongoose.Schema({
 
 
 const ItemModel = mongoose.model("Item", itemSchema);
-const CustomisationModel = mongoose.model("Customisation", customisationSchema);
+// const CustomisationModel = mongoose.model("Customisation", customisationSchema);
 
 module.exports = {
     ItemModel,
-    CustomisationModel,
     CategoryModel
 }
