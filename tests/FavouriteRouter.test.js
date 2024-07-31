@@ -140,6 +140,18 @@ describe('Favourite Router', () => {
             expect(response.body.message).toBe("Favourite updated successfully.");
             expect(response.body.favourite.item.itemId).toBe(`${testItem2._id}`);
         });
+
+        it('should return an error if no item is found from itemId', async () => {
+            const falseItem = new mongoose.Types.ObjectId();
+            const response = await request(app)
+                .patch(`/favourites/${testFavourite._id}`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    itemId: falseItem
+                });
+            expect(response.statusCode).toEqual(404);
+            expect(response.body.message).toBe("Item not found.");
+        });
     });
 });
 
