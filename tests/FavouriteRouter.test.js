@@ -108,7 +108,7 @@ describe('Favourite Router', () => {
                 .set('Authorization', `Bearer ${token}`)
                 .send({
                     userId: testUser._id,
-                    itemId: testItem
+                    itemId: testItem._id
                 });
             expect(response.statusCode).toEqual(400);
             expect(response.body.message).toBe("Item is already in your favourites.")
@@ -125,6 +125,21 @@ describe('Favourite Router', () => {
             expect(response.body.result.length).toBe(1);
             expect(response.body.result[0]._id).toBe(`${testFavourite._id}`);
         })
-    })
+    });
+
+
+    describe('PATCH /favourites/:id', () => {
+        it('should update an existing favourite', async () => {
+            const response = await request(app)
+                .patch(`/favourites/${testFavourite._id}`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    itemId: testItem2._id,
+                });
+            expect(response.statusCode).toEqual(200);
+            expect(response.body.message).toBe("Favourite updated successfully.");
+            expect(response.body.favourite.item.itemId).toBe(`${testItem2._id}`);
+        });
+    });
 });
 
