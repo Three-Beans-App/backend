@@ -54,10 +54,10 @@ const favouriteSchema = new mongoose.Schema({
         required: true
     },
     item: favouriteItemSchema,
-    totalPrice: {
-        type: Number,
-        required: true
-    }
+    // totalPrice: {
+    //     type: Number,
+    //     required: true
+    // }
 });
 
 const FavouriteModel = mongoose.model('Favourite', favouriteSchema);

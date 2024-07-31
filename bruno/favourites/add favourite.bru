@@ -1,0 +1,22 @@
+meta {
+  name: add favourite
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3001/favourites
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OWZiNzk5ZDIyY2Y4OWVmMWJhMzMwOCIsImFkbWluIjpmYWxzZSwiaWF0IjoxNzIyNDIwMjQyLCJleHAiOjE3MjM2Mjk4NDJ9.5IxYKJb5pkwODhAj4sUvWO4HeVeTyharVDf7eGJ8Ueo
+}
+
+body:json {
+  {
+    "userId": "",
+    "itemId": ""
+  }
+}
