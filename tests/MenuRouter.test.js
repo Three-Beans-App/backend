@@ -264,6 +264,17 @@ describe('Menu Routes', () => {
             expect(response.body.message).toBe("Category updated successfully");
             expect(response.body.category.name).toBe("New Name");
         });
+
+        it('should not update a category to an existing name', async () => {
+            const response = await request(app)
+                .patch(`/menu/update/category/${testCategory._id}`)
+                .set('Authorization', `Bearer ${adminToken}`)
+                .send({
+                    name: "Test Category 2"
+                });
+            expect(response.statusCode).toEqual(400);
+            expect(response.body.message).toBe("Category with this name already exists.");
+        });  
     });
 
 
