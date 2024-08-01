@@ -245,7 +245,7 @@ router.patch(
 
             if (!category) {
                 return response.status(404).json({
-                    message: "Category not found"
+                    message: "Category not found."
                 });
             }
             response.status(200).json({

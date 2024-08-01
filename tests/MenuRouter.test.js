@@ -274,7 +274,19 @@ describe('Menu Routes', () => {
                 });
             expect(response.statusCode).toEqual(400);
             expect(response.body.message).toBe("Category with this name already exists.");
-        });  
+        });
+        
+        it('should return an error if no category is found from request params', async () => {
+            const falseCategory = new mongoose.Types.ObjectId();
+            const response = await request(app)
+                .patch(`/menu/update/category/${falseCategory}`)
+                .set('Authorization', `Bearer ${adminToken}`)
+                .send({
+                    name: "New Name"
+                });
+            expect(response.statusCode).toEqual(404);
+            expect(response.body.message).toBe("Category not found.");
+        });
     });
 
 
