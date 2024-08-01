@@ -32,6 +32,7 @@ describe('Menu Routes', () => {
     let userToken;
     let testItem;
     let testCategory;
+    let testCategory2;
 
     beforeEach( async () => {
         await UserModel.deleteMany({});
@@ -60,6 +61,9 @@ describe('Menu Routes', () => {
     
         testCategory = new CategoryModel({ name: "Test Category" });
         await testCategory.save();
+
+        testCategory2 = new CategoryModel({ name : "Test Category 2"});
+        await testCategory2.save();
     
         testItem = new ItemModel({
             name: "Test Item",
@@ -170,7 +174,7 @@ describe('Menu Routes', () => {
         const response = await request(app)
             .get("/menu/categories")
         expect(response.statusCode).toEqual(200);
-        expect(response.body.result.length).toBe(1);
+        expect(response.body.result.length).toBe(2);
     });
 
 
@@ -254,10 +258,18 @@ describe('Menu Routes', () => {
 
     it('should delete a specified category', async () => {
         const response = await request(app)
-            .delete(`/menu/delete/category/${testCategory._id}`)
+            .delete(`/menu/delete/category/${testCategory2._id}`)
             .set('Authorization', `Bearer ${adminToken}`);
         expect(response.statusCode).toEqual(200);
-        expect(response.body.message).toBe(`Category Test Category deleted successfully.`);
+        expect(response.body.message).toBe(`Category Test Category 2 deleted successfully.`);
+    });
+
+    it('should not delete a category if there are items associated with it', async () => {
+        const response = await request(app)
+            .delete(`/menu/delete/category/${testCategory._id}`)
+            .set('Authorization', `Bearer ${adminToken}`);
+        expect(response.statusCode).toEqual(400);
+        expect(response.body.message).toBe("Cannot delete this category as there are still items associated with it.");
     });
 
     it('should return an error if no category is found for ID', async () => {
