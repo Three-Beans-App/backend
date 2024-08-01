@@ -298,6 +298,12 @@ router.delete(
     async (request, response, next) => {
         const { id } = request.params;
         try {
+            const itemsInCategory = await ItemModel.find({ category: id }).exec();
+            if (itemsInCategory.length > 0) {
+                return response.status(400).json({
+                    message: "Cannot delete this category as there are still items associated with it."
+                });
+            }
             const category = await CategoryModel.findByIdAndDelete(id).exec();
             if (!category) {
                 return response.status(404).json({
