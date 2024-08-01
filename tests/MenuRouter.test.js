@@ -252,6 +252,21 @@ describe('Menu Routes', () => {
     });
 
 
+    describe('PATCH /menu/update/category', () => {
+        it('should update an existing category', async () => {
+            const response = await request(app)
+                .patch(`/menu/update/category/${testCategory._id}`)
+                .set('Authorization', `Bearer ${adminToken}`)
+                .send({
+                    name: "New Name"
+                });
+            expect(response.statusCode).toEqual(200);
+            expect(response.body.message).toBe("Category updated successfully");
+            expect(response.body.category.name).toBe("New Name");
+        });
+    });
+
+
     describe('DELETE /menu/delete/item', () => {
         it('should delete a specified item', async () => {
             const response = await request(app)
