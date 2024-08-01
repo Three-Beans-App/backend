@@ -4,84 +4,13 @@ const { verifyJwt, verifyAdmin, validateObjectId } = require('../utils/middlewar
 const router = express.Router();
 
 
-// Base route to get all items
-router.get("/", async (request, response, next) => {
-    try{
-        // query database to find all item documents
-        const items = await ItemModel.find({}).exec();
-
-        response.status(200).json({
-            // respond with each item
-            result: items
-        });
-    } catch (error) {
-        next(error);
-    }
-});
-
-
-// Route to get all categories
-router.get("/categories", async (request, response, next) => {
-    try{
-        const categories = await CategoryModel.find({}).exec();
-        response.status(200).json({
-            result: categories
-        });
-    } catch (error) {
-        next(error);
-    }
-});
-
-
-// Route to get a single item by ID
-router.get("/:id", validateObjectId, async (request, response, next) => {
-    try {
-        // include itemID in the search params
-        const { id } = request.params;       
-        // query database to find matching item for the ID
-        const item = await ItemModel.findById(id).exec();
-
-        if (!item) {
-            // return a 404 if no item with the ID exists
-            return response.status(404).json({
-                message: "Item not found."
-            });
-        }
-
-        response.status(200).json({
-            // respond with the matching item
-            result: item
-        });
-    } catch (error) {
-        next(error);
-    }
-});
-
-
-// Route to get all items of a specific category
-router.get("/categories/:id", validateObjectId, async (request, response, next) => {
-    try{
-        const { id } = request.params;
-        const items = await ItemModel.find({ category: id }).exec();
-
-        if (items.length === 0) {
-            return response.status(404).json({
-                message: "There are currently no items in this category."
-            });
-        }
-
-        response.status(200).json({
-            result: items
-        });
-    } catch (error) {
-        next(error);
-    }
-});
+/* == POST requests == */
 
 
 // Route to create a new menu item
+// eg. POST localhost:3001/menu/create/Item/
 router.post(
-    "/addItem", 
+    "/create/item", 
     verifyJwt, 
     verifyAdmin, 
     async (request, response, next) => {
@@ -124,8 +53,9 @@ router.post(
 
 
 // Route to add a new category
+// eg. POST localhost:3001/menu/create/category/
 router.post(
-    "/addCategory",
+    "/create/category",
     verifyJwt,
     verifyAdmin,
     async (request, response, next) => {
@@ -148,12 +78,100 @@ router.post(
         } catch (error) {
             next(error)
         }
-    });
+});
+
+
+/* == GET requests == */
+
+
+// Base route to get all items
+// eg. GET localhost:3001/menu/items/
+router.get("/items", async (request, response, next) => {
+    try{
+        // query database to find all item documents
+        const items = await ItemModel.find({}).exec();
+
+        response.status(200).json({
+            // respond with each item
+            result: items
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+
+// Route to get all categories
+// eg. GET localhost:3001/menu/categories/
+router.get("/categories", async (request, response, next) => {
+    try{
+        const categories = await CategoryModel.find({}).exec();
+        response.status(200).json({
+            result: categories
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+
+// Route to get a single item by ID
+// eg. GET localhost:3001/menu/item/669fb799d22cf89ef1ba3315/
+router.get("/item/:id", validateObjectId, async (request, response, next) => {
+    try {
+        // include itemID in the search params
+        const { id } = request.params;       
+        // query database to find matching item for the ID
+        const item = await ItemModel.findById(id).exec();
+
+        if (!item) {
+            // return a 404 if no item with the ID exists
+            return response.status(404).json({
+                message: "Item not found."
+            });
+        }
+
+        response.status(200).json({
+            // respond with the matching item
+            result: item
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+
+// Route to get all items of a specific category by id
+// eg. GET localhost:3001/menu/category/669fb799d22cf89ef1ba330c/
+router.get("/category/:id", validateObjectId, async (request, response, next) => {
+    try{
+        // Retrieve category from request params and search for items
+        const { id } = request.params;
+        const items = await ItemModel.find({ category: id }).exec();
+
+        if (items.length === 0) {
+            // Return not found if no items in category
+            return response.status(404).json({
+                message: "There are currently no items in this category."
+            });
+        }
+        // Respond with all item documents for the category
+        response.status(200).json({
+            result: items
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+
+/* == PATCH requests == */
 
 
 // Route to update menu items
+// eg. PATCH localhost:3001/menu/update/item/669fb799d22cf89ef1ba3315/
 router.patch(
-    "/updateItem/:id",
+    "/update/item/:id",
     validateObjectId, 
     verifyJwt, 
     verifyAdmin, 
@@ -200,8 +218,9 @@ router.patch(
 
 
 // Route to update an existing category
+// eg. PATCH localhost:3001/menu/updateCategory/669fb799d22cf89ef1ba330c/
 router.patch(
-    "/updateCategory/:id",
+    "/update/category/:id",
     validateObjectId,
     verifyJwt,
     verifyAdmin,
@@ -241,9 +260,13 @@ router.patch(
     });
 
 
+/* == DELETE requests == */
+
+
 // Route to delete a selected item
+// eg. DELETE localhost:3001/menu/delete/item/669fb799d22cf89ef1ba3315/
 router.delete(
-    "/deleteItem/:id",
+    "/delete/item/:id",
     validateObjectId,
     verifyJwt, 
     verifyAdmin, 
@@ -266,8 +289,9 @@ router.delete(
 
 
 // Route to delete a selected category
+// eg. DELETE localhost:3001/menu/delete/category/669fb799d22cf89ef1ba330c/
 router.delete(
-    "/deleteCategory/:id",
+    "/delete/category/:id",
     validateObjectId,
     verifyJwt,
     verifyAdmin,
@@ -290,9 +314,3 @@ router.delete(
 
 
 module.exports = router;
-
-
-
-
-
-
