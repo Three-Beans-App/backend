@@ -4,7 +4,7 @@ const { verifyJwt, verifyAdmin, validateObjectId } = require('../utils/middlewar
 const router = express.Router();
 
 
-/* == POST requests == */
+/* == POST == */
 
 
 // Route to create a new menu item
@@ -87,7 +87,7 @@ router.post(
 });
 
 
-/* == GET requests == */
+/* == GET == */
 
 
 // Base route to get all items
@@ -169,7 +169,7 @@ router.get("/category/:id", validateObjectId, async (request, response, next) =>
 });
 
 
-/* == PATCH requests == */
+/* == PATCH == */
 
 
 // Route to update menu items
@@ -277,7 +277,7 @@ router.patch(
     });
 
 
-/* == DELETE requests == */
+/* == DELETE == */
 
 
 // Route to delete a selected item

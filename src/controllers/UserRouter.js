@@ -2,27 +2,21 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const { UserModel } = require('../models/UserModel');
 const { createJwt, decodedJwt } = require('../utils/auth');
-const { verifyJwt } = require('../utils/middleware');
+const { verifyJwt, verifyAdmin } = require('../utils/middleware');
 const router = express.Router();
 
-// Base route to get all users
-router.get("/", async (request, response, next) => {
-    let result = await UserModel.find({}).exec();
 
-    response.json({
-        message: "User router operation",
-        result: result
-    });
-});
+/* == POST == */
 
 
-// User signup route
+// Route for user signup
+// eg. POST localhost:3001/users/signup/
 router.post("/signup", async (request, response, next) => {
-    // Get user details from request body
+    // Retrive user details from request body
     const { email, password, name, birthday } = request.body;
 
     try {
-        // Check email for existing user
+        // Check to ensure the email is not already in use
         const existingUser = await UserModel.findOne({ email }).exec();
         if (existingUser) {
             return response.status(400).json({
@@ -30,20 +24,20 @@ router.post("/signup", async (request, response, next) => {
             });
         }
         
-        // Create a new user from request body
+        // Create a new document and save to the database
         const newUser = new UserModel({
             email,
             password,
             name,
             birthday
         });
-        // Save the user to the database
         await newUser.save();
-        // Create JWT for the new user
+
+        // Create a JWT for the new user
         const token = createJwt(newUser._id);
         const decodedJwtData = decodedJwt(token);
 
-        // Respond with JWT and confirmation message 
+        // Respond with confirmation, new user document and JWT 
         response.status(201).json({
             message: `Thank you for signing up to Three Beans ${name}!`,
             newUser,
@@ -51,13 +45,13 @@ router.post("/signup", async (request, response, next) => {
             decodedJwt: decodedJwtData
         });
     } catch (error) {
-        // Handle errors using server middleware
         next(error);
     }
 });
 
 
-// User login route
+// Route for user login
+// eg. POST localhost:3001/users/login/
 router.post("/login", async (request, response, next) => {
     // Get user details from request body
     const { email } = request.body;
@@ -87,23 +81,44 @@ router.post("/login", async (request, response, next) => {
         if (isPassword) {
             // generate JWT for user
             const token = createJwt(user);
-            response.status(200).json({
+
             // Respond with confirmation and JWT
+            response.status(200).json({
             message: `${user.name} has logged in successfully!`,
             token
             });
-        }
-        // Create JWT for authorisation
-               
+        }            
     } catch (error) {
-        // Handle errors using server middleware
         next(error);
     }
 });
 
 
-// User update route
+/* == GET == */
+
+
+// Base route to get all users
+// eg. GET localhost:3001/users/
+router.get(
+    "/", 
+    verifyJwt,
+    verifyAdmin,
+    async (request, response, next) => {
+        let result = await UserModel.find({}).exec();
+        response.json({
+            message: "User router operation",
+            result: result
+    });
+});
+
+
+/* == PATCH == */
+
+
+// Route to update user info
+// eg. PATCH localhost:3001/users/update/
 router.patch("/update", verifyJwt, async (request, response, next) => {
+    // Retrieve the users updated details from the request body
     const { name, email, password, birthday } = request.body;
 
     try {
@@ -114,10 +129,10 @@ router.patch("/update", verifyJwt, async (request, response, next) => {
                 message: "User not found."
             });
         }
-        // update user fields
+        // Conditional logic to update user fields
         if (name) user.name = name;
         if (email) {
-            // verify that the email isn't already in use
+            // Check to ensure the updated email isn't already in use
             const existingUser = await UserModel.findOne({ email }).exec();
             if (existingUser && existingUser._id.toString() !== request.userId) {
                 return response.status(400).json({
@@ -126,8 +141,8 @@ router.patch("/update", verifyJwt, async (request, response, next) => {
             }
             user.email = email;
         }
+        // Hash the new password
         if (password) {
-            // Hash the new password
             user.password = await bcrypt.hash(password, 10);
         }
         if (birthday) user.birthday = birthday;
@@ -138,8 +153,8 @@ router.patch("/update", verifyJwt, async (request, response, next) => {
         // Create a JWT for the updated user
         const token = createJwt(user);
 
+        // Respond with confirmation and JWT
         response.status(200).json({
-            // Respond with confirmation and JWT
             message: "Profile updated successfully!",
             token
         });
@@ -149,7 +164,11 @@ router.patch("/update", verifyJwt, async (request, response, next) => {
 });
 
 
-// User profile delete route
+/* == DELETE == */
+
+
+// Route to delete a user 
+// eg. DELETE localhost:3001/users/delete/
 router.delete("/delete", verifyJwt, async (request, response, next) => {
     try {
         // Ensure the user is deleting their own profile
@@ -159,20 +178,17 @@ router.delete("/delete", verifyJwt, async (request, response, next) => {
                 message: "User not found."
             });
         }
-        // Delete the user profile
+        // Find and delete the user document in the database
         await UserModel.findByIdAndDelete(request.userId).exec();
 
+        // Respond with confirmation
         response.status(200).json({
-            // Respond with the name of the user deleted as confirmation
             message: `User ${user.name} deleted successfully.`
         });
     } catch (error) {
         next(error);
     }
 });
-
-
-
 
 
 module.exports = router;
