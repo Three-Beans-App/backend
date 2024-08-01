@@ -72,7 +72,7 @@ describe('Menu Routes', () => {
 
     it('should add a new category', async () => {
         const response = await request(app)
-            .post("/menu/addCategory")
+            .post("/menu/create/category")
             .set('Authorization', `Bearer ${adminToken}`)
             .send({ name: "NewCategory" });
         expect(response.statusCode).toEqual(201);
@@ -81,7 +81,7 @@ describe('Menu Routes', () => {
 
     it('should not add a category without admin status', async () => {
         const response = await request(app)
-            .post("/menu/addCategory")
+            .post("/menu/create/category")
             .set('Authorization', `Bearer ${userToken}`)
             .send({ name: "newCategory" });
         expect(response.statusCode).toEqual(403);
@@ -90,7 +90,7 @@ describe('Menu Routes', () => {
 
     it('should not add a category without a valid token', async () => {
         const response = await request(app)
-            .post("/menu/addCategory")
+            .post("/menu/create/category")
             .set('Authorization', 'Bearer badToken')
             .send({ name: "newCategory" });
         expect(response.statusCode).toEqual(401);
@@ -99,7 +99,7 @@ describe('Menu Routes', () => {
 
     it('should not add a category without an existing token', async () => {
         const response = await request(app)
-            .post("/menu/addCategory")
+            .post("/menu/create/category")
             .send({ name: "newCategory" });
         expect(response.statusCode).toEqual(401);
         expect(response.body.message).toBe("Authentication token is required");
@@ -107,7 +107,7 @@ describe('Menu Routes', () => {
 
     it('should not add a category with an existing name', async () => {
         const response = await request(app)
-            .post("/menu/addCategory")
+            .post("/menu/create/category")
             .set('Authorization', `Bearer ${adminToken}`)
             .send({ name: "Test Category" });
         expect(response.statusCode).toEqual(400);
@@ -117,7 +117,7 @@ describe('Menu Routes', () => {
 
     it('should add a new item', async () => {
         const response = await request(app)
-            .post("/menu/addItem")
+            .post("/menu/create/item")
             .set('Authorization', `Bearer ${adminToken}`)
             .send({
                 name: "New Item",
@@ -131,7 +131,7 @@ describe('Menu Routes', () => {
 
     it('should not add an item when no category is found', async () => {
         const response = await request(app)
-            .post("/menu/addItem")
+            .post("/menu/create/item")
             .set('Authorization', `Bearer ${adminToken}`)
             .send({
                 name: "New Item",
@@ -145,7 +145,7 @@ describe('Menu Routes', () => {
 
     it('should not add an item with an existing name', async () => {
         const response = await request(app)
-            .post("/menu/addItem")
+            .post("/menu/create/item")
             .set('Authorization', `Bearer ${adminToken}`)
             .send({
                 name: "Test Item",
@@ -160,7 +160,7 @@ describe('Menu Routes', () => {
 
     it('should get all items', async () => {
         const response = await request(app)
-            .get("/menu")
+            .get("/menu/items")
         expect(response.statusCode).toEqual(200);
         expect(response.body.result.length).toBe(1);
     });
@@ -176,7 +176,7 @@ describe('Menu Routes', () => {
 
     it('should get item by ID', async () => {
         const response = await request(app)
-            .get(`/menu/${testItem._id}`);
+            .get(`/menu/item/${testItem._id}`);
         expect(response.statusCode).toEqual(200);
         expect(response.body.result.name).toBe("Test Item")
     });
@@ -184,7 +184,7 @@ describe('Menu Routes', () => {
     it('should return an error if no item is found for ID', async () => {
         const falseId = new mongoose.Types.ObjectId();
         const response = await request(app)
-            .get(`/menu/${falseId}`);
+            .get(`/menu/item/${falseId}`);
         expect(response.statusCode).toEqual(404);
         expect(response.body.message).toBe("Item not found.")
     });
@@ -192,7 +192,7 @@ describe('Menu Routes', () => {
 
     it('should get all items of a specified category', async () => {
         const response = await request(app)
-            .get(`/menu/categories/${testCategory._id}`);
+            .get(`/menu/category/${testCategory._id}`);
         expect(response.statusCode).toEqual(200);
         expect(response.body.result.length).toBe(1);
     });
@@ -200,7 +200,7 @@ describe('Menu Routes', () => {
     it('should return an error if there are no items in the category', async () => {
         const emptyCategory = new CategoryModel({ name: "Empty Category" });
         const response = await request(app)
-            .get(`/menu/categories/${emptyCategory._id}`);
+            .get(`/menu/category/${emptyCategory._id}`);
         expect(response.statusCode).toEqual(404);
         expect(response.body.message).toBe("There are currently no items in this category.");
     });
@@ -208,7 +208,7 @@ describe('Menu Routes', () => {
 
     it('should update an existing item', async () => {
         const response = await request(app)
-            .patch(`/menu/updateItem/${testItem._id}`)
+            .patch(`/menu/update/item/${testItem._id}`)
             .set('Authorization', `Bearer ${adminToken}`)
             .send({
                 name: "New Name",
@@ -224,7 +224,7 @@ describe('Menu Routes', () => {
 
     it('should not update an item if no category is found', async () => {
         const response = await request(app)
-            .patch(`/menu/updateItem/${testItem._id}`)
+            .patch(`/menu/update/item/${testItem._id}`)
             .set('Authorization', `Bearer ${adminToken}`)
             .send({
                 category: "False Category"
@@ -236,7 +236,7 @@ describe('Menu Routes', () => {
 
     it('should delete a specified item', async () => {
         const response = await request(app)
-            .delete(`/menu/deleteItem/${testItem._id}`)
+            .delete(`/menu/delete/item/${testItem._id}`)
             .set('Authorization', `Bearer ${adminToken}`);
         expect(response.statusCode).toEqual(200);
         expect(response.body.message).toBe(`Item Test Item deleted successfully.`);
@@ -245,7 +245,7 @@ describe('Menu Routes', () => {
     it('should return an error if no item is found for ID', async () => {
         const falseId = new mongoose.Types.ObjectId();
         const response = await request(app)
-            .delete(`/menu/deleteItem/${falseId}`)
+            .delete(`/menu/delete/item/${falseId}`)
             .set('Authorization', `Bearer ${adminToken}`);
         expect(response.statusCode).toEqual(404);
         expect(response.body.message).toBe("Item not found.")
@@ -254,7 +254,7 @@ describe('Menu Routes', () => {
 
     it('should delete a specified category', async () => {
         const response = await request(app)
-            .delete(`/menu/deleteCategory/${testCategory._id}`)
+            .delete(`/menu/delete/category/${testCategory._id}`)
             .set('Authorization', `Bearer ${adminToken}`);
         expect(response.statusCode).toEqual(200);
         expect(response.body.message).toBe(`Category Test Category deleted successfully.`);
@@ -263,7 +263,7 @@ describe('Menu Routes', () => {
     it('should return an error if no category is found for ID', async () => {
         const falseId = new mongoose.Types.ObjectId();
         const response = await request(app)
-            .delete(`/menu/deleteCategory/${falseId}`)
+            .delete(`/menu/delete/category/${falseId}`)
             .set('Authorization', `Bearer ${adminToken}`);
         expect(response.statusCode).toEqual(404);
         expect(response.body.message).toBe("Category not found.")
