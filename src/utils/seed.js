@@ -80,7 +80,8 @@ async function seedItems() {
                 category: coffee._id,
                 price: 5.99,
                 available: true,
-                description: "A shot of esspresso with equal parts steamed milk and froth."
+                description: "A shot of esspresso with equal parts steamed milk and froth.",
+                image: "https://cdn.pixabay.com/photo/2024/04/18/11/56/ai-generated-8704229_1280.png"
             },
             {
                 name: "Latte", // 1
