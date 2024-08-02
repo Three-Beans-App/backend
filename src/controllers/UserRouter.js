@@ -85,6 +85,7 @@ router.post("/login", async (request, response, next) => {
             // Respond with confirmation and JWT
             response.status(200).json({
             message: `${user.name} has logged in successfully!`,
+            userId: user._id,
             token
             });
         }            
