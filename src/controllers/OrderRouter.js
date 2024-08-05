@@ -1,7 +1,7 @@
 const express = require('express');
 const { OrderModel } = require('../models/OrderModel');
-const { verifyJwt, validateObjectId, verifyAdmin } = require('../utils/middleware');
 const { ItemModel } = require('../models/ItemModel');
+const { verifyJwt, validateObjectId, verifyAdmin } = require('../utils/middleware');
 const router = express.Router();
 
 // Function to calculate total price for creating orders
