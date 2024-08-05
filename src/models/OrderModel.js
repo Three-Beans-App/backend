@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { UserModel } = require('./UserModel.js');
-const { ItemModel, CategoryModel, CustomisationModel } = require('./ItemModel.js');
+const { ItemModel, CategoryModel } = require('./ItemModel.js');
 
 const orderItemSchema = new mongoose.Schema({
     itemId: {

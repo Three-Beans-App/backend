@@ -2,7 +2,10 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
+// Function to create JWT for users
 function createJwt(user){
+
+    // JWT header values and expiry
     let newJwt = jwt.sign(
         {
             id: user._id,
@@ -16,24 +19,7 @@ function createJwt(user){
     return newJwt;
 }
 
-function validateJwt(jwtToValidate){
-    let isJwtValid = false;
-
-    jwt.verify(jwtToValidate, process.env.JWT_KEY, (error, decodedJwt) => {
-        if (error){
-            throw new Error("User JWT is not valid");
-        }
-
-        console.log("Decoded JWT data: ");
-        console.log(decodedJwt);
-        isJwtValid = true;
-    });
-
-    return isJwtValid;
-}
-
-
-
+// Function to decode user JWT
 function decodedJwt(jwtToDecode){
     let decodedData = jwt.verify(jwtToDecode, process.env.JWT_KEY);
     return decodedData;
@@ -41,6 +27,5 @@ function decodedJwt(jwtToDecode){
 
 module.exports = {
     createJwt,
-    validateJwt,
     decodedJwt
 }
