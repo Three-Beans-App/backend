@@ -25,19 +25,29 @@ afterAll(async () => {
 
 describe('User Routes', () => {
     let token;
+    let adminToken;
     let user;
 
     beforeEach(async () => {
         // Clear database before each test
         await UserModel.deleteMany({});
         user = new UserModel({
+            name: "Test User",
             email: "test@email.com",
             password: "password",
-            name: "Test User",
             birthday: new Date('1985-05-12')
         });
         await user.save();  
         token = createJwt(user);
+
+        const adminUser = await new UserModel({
+            name: "Admin User",
+            email: "admin@test.com",
+            password: "password",
+            admin: true
+        });
+        await adminUser.save();
+        adminToken = createJwt(adminUser);
     });
     
 
@@ -45,9 +55,10 @@ describe('User Routes', () => {
     describe("GET /users", () => {
         it('should return all users', async () => {
             const response = await request(app)
-                .get("/users");
+                .get("/users")
+                .set('Authorization', `Bearer ${adminToken}`);
             expect(response.statusCode).toEqual(200);
-            expect(response.body.result.length).toBe(1);
+            expect(response.body.result.length).toBe(2);
             expect(response.body.result[0].email).toBe("test@email.com");
         });
     });

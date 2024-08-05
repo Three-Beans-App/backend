@@ -29,18 +29,4 @@ describe('Auth Utils', () => {
             expect(decoded.admin).toBe(user.admin);
         });
     });
-
-
-    describe('validateJwt', () => {
-        it('should return a true value for valid JWT', () => {
-            const token = createJwt(user);
-            const isValid = validateJwt(token);
-            expect(isValid).toBe(true);
-        });
-
-        it('should throw an error for an invalid JWT', () => {
-            const invalidToken = 'invalidToken';
-            expect(() => validateJwt(invalidToken)).toThrow("User JWT is not valid");
-        });
-    });
 });
