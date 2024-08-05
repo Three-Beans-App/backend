@@ -30,11 +30,11 @@ const favouriteRouter = require('./controllers/FavouriteRouter.js');
 app.use("/favourites", favouriteRouter);
 
 
-app.get("*", (request, response, next) => {
-    response.status(404).json({
-        message:"404 Page not found"
-    });
-});
+// app.get("*", (request, response, next) => {
+//     response.status(404).json({
+//         message:"404 Page not found"
+//     });
+// });
 
 
 app.use((error, request, response, next) => {
