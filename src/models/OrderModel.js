@@ -29,28 +29,6 @@ const orderItemSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    // customisations: {
-    //     size: {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'Customisation',
-    //         required: false
-    //     },
-    //     milk: {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'Customisation',
-    //         required: false
-    //     },
-    //     sugar: {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'Customisation',
-    //         required: false
-    //     },
-    //     extras: [{
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'Customisation',
-    //         required: false
-    //     }]
-    // }
 });
 
 

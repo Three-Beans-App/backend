@@ -276,129 +276,6 @@ async function seedItems() {
 }
 
 
-// async function seedCustomisation() {
-//     const customisations = [
-//         {
-//             category: "milk", // 0
-//             name: "Whole",
-//             available: 100,
-//         },
-//         {
-//             category: "milk", // 1
-//             name: "Skim",
-//             available: 100
-//         },
-//         {
-//             category: "milk", // 2
-//             name: "Soy",
-//             available: 100
-//         },
-//         {
-//             category: "milk", // 3
-//             name: "Almond",
-//             available: 100
-//         },
-//         {
-//             category: "milk", // 4
-//             name: "Oat",
-//             available: 100
-//         },
-//         {
-//             category: "sugar", // 0
-//             name: "White",
-//             available: 100
-//         },
-//         {
-//             category: "sugar", // 1
-//             name: "Raw",
-//             available: 100
-//         },
-//         {
-//             category: "sugar", // 2
-//             name: "Stevia",
-//             available: 100
-//         },
-//         {
-//             category: "sugar", // 3
-//             name: "Honey",
-//             available: 100
-//         },
-//         {
-//             category: "size", // 0
-//             name: "Regular",
-//             available: 100
-//         },
-//         {
-//             category: "size", // 1
-//             name: "Large",
-//             available: 100,
-//             price: 2.00
-//         },
-//         {
-//             category: "extra", // 0
-//             name: "Sugar",
-//             available: 100
-//         },
-//         {
-//             category: "extra", // 1
-//             name: "Stevia",
-//             available: 100
-//         },
-//         {
-//             category: "extra", // 2
-//             name: "Honey",
-//             available: 100
-//         },
-//         {
-//             category: "extra", // 3
-//             name: "Chocolate Dust",
-//             available: 100,
-//             price: 0.50
-//         },
-//         {
-//             category: "extra", // 4
-//             name: "Chocolate",
-//             available: 100,
-//             price: 1.00
-//         },
-//         {
-//             category: "extra", // 5
-//             name: "Cinnamon dust",
-//             available: 100,
-//             price: 0.50
-//         },
-//         {
-//             category: "extra", // 6
-//             name: "Caramel Drizzle",
-//             available: 100,
-//             price: 0.50
-//         },
-//         {
-//             category: "extra", // 7
-//             name: "Caramel",
-//             available: 100,
-//             price: 1.00
-//         },
-//         {
-//             category: "extra", // 8
-//             name: "Whipped Cream",
-//             available: 100,
-//             price: 1.00
-//         }
-
-//     ]
-
-//     console.log("Seeding customisations...");
-//     try {
-//         let result = await CustomisationModel.insertMany(customisations);
-//         console.log([...result]);
-//         return [...result];
-//     } catch (error) {
-//         console.error("Error seeding customisations: " + error);
-//     }
-// }
-
-
 async function calculateTotalPrice(items) {
     let totalPrice = 0;
 
@@ -430,11 +307,6 @@ async function calculateTotalPrice(items) {
 
 async function seedOrders(users, items) {
     try {
-        // const sizeOptions = await CustomisationModel.find({ category: "size" });
-        // const milkOptions = await CustomisationModel.find({ category: "milk" });
-        // const sugarOptions = await CustomisationModel.find({ category: "sugar" });
-        // const extraOptions = await CustomisationModel.find({ category: "extra" });
-
         const orderItems1 = [
                 {
                 itemId: items[0]._id,
@@ -442,13 +314,7 @@ async function seedOrders(users, items) {
                 category: items[0].category,
                 quantity: 2,
                 price: items[0].price,
-                total: items[0].price * 2,
-                // customisations: {
-                //     size: sizeOptions[1]._id,
-                //     milk: milkOptions[0]._id,
-                //     sugar: sugarOptions[0]._id,
-                //     extras: [extraOptions[3], extraOptions[4]]
-                // }               
+                total: items[0].price * 2,             
             }
         ];
         const orderItems2 = [
@@ -458,12 +324,7 @@ async function seedOrders(users, items) {
                 category: items[1].category,
                 quantity: 1,
                 price: items[1].price,
-                total: items[1].price,
-                // customisations: {
-                //     size: sizeOptions[0]._id,
-                //     milk: null,
-                //     sugar: sugarOptions[0]._id
-                // }               
+                total: items[1].price,           
             },
             {
                 itemId: items[0]._id,
@@ -471,12 +332,7 @@ async function seedOrders(users, items) {
                 category: items[0].category,
                 quantity: 1,
                 price: items[0].price,
-                total: items[0].price,
-                // customisations: {
-                //     size: sizeOptions[1]._id,
-                //     milk: milkOptions[2]._id,
-                //     sugar: sugarOptions[1]._id
-                // }               
+                total: items[0].price,              
             },
             {
                 itemId: items[4]._id,
@@ -484,12 +340,7 @@ async function seedOrders(users, items) {
                 category: items[4].category,
                 quantity: 2,
                 price: items[4].price,
-                total: items[4].price * 2,
-                // customisations: {
-                //     size: null,
-                //     milk: null,
-                //     sugar: null
-                // }               
+                total: items[4].price * 2,            
             }
 
         ];
@@ -523,35 +374,18 @@ async function seedOrders(users, items) {
 
 async function seedFavourites(users, items) {
     try {
-        // const sizeOptions = await CustomisationModel.find({ category: "size" });
-        // const milkOptions = await CustomisationModel.find({ category: "milk" });
-        // const sugarOptions = await CustomisationModel.find({ category: "sugar" });
-        // const extraOptions = await CustomisationModel.find({ category: "extra" });
-
         const favouriteItems = [
             {
                 itemId: items[1]._id,
                 name: items[1].name,
                 category: items[1].category,
                 price: items[4].price,
-
-                // customisations: {
-                //     size: sizeOptions[1],
-                //     milk: milkOptions[0],
-                //     sugar: sugarOptions[1],
-                //     extras: [extraOptions[3], extraOptions[7]]
-                // }
             },
             {
                 itemId: items[9]._id,
                 name: items[9].name,
                 category: items[9].category,
                 price: items[9].price,
-                // customisations: {
-                //     size: sizeOptions[1],
-                //     milk: milkOptions[3],
-                //     extras: [extraOptions[6], extraOptions[8]]
-                // }
             }
         ];
 
@@ -586,7 +420,6 @@ async function seed(){
     let newUsers = await seedUsers();
     let newCategories = await seedCategories();
     let newItems = await seedItems();
-    // let newCustomisations = await seedCustomisation();
     let newOrders = await seedOrders(newUsers, newItems);
     let newFavourites = await seedFavourites(newUsers, newItems);
 
