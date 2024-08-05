@@ -9,7 +9,7 @@ app.use(cors({
     credentials: true
 }));
 
-
+// Base route for the app
 app.get("/", (request, response) => {
 
     response.json({
@@ -17,6 +17,7 @@ app.get("/", (request, response) => {
     });
 });
 
+// Router middleware to access app routes
 const userRouter = require('./controllers/UserRouter.js');
 app.use("/users", userRouter);
 
@@ -30,6 +31,7 @@ const favouriteRouter = require('./controllers/FavouriteRouter.js');
 app.use("/favourites", favouriteRouter);
 
 
+// Not found middleware for all other routes
 app.get("*", (request, response, next) => {
     response.status(404).json({
         message:"404 Page not found"
@@ -37,6 +39,7 @@ app.get("*", (request, response, next) => {
 });
 
 
+// Internal server error middleware
 app.use((error, request, response, next) => {
     response.status(error.status || 500).json({
         message:"Error Occured!",
