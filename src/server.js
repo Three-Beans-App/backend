@@ -3,7 +3,11 @@ const app = express();
 const cors = require("cors");
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: 'GET, POST, PATCH, DELETE',
+    credentials: true
+}));
 
 
 app.get("/", (request, response) => {
