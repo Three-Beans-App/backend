@@ -39,6 +39,7 @@ const itemSchema = new mongoose.Schema({
     image: {
         type: String,
         required: false,
+        default: 'https://via.placeholder.com/250x250?text=No+Image',
         validate: {
             validator: function(v) {
                 return /^https?:\/\/[^\s$.?#].[^\s]*$/gm.test(v);
