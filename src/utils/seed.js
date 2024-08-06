@@ -2,7 +2,7 @@ const { UserModel } = require('../models/UserModel');
 const { CategoryModel, ItemModel, CustomisationModel } = require('../models/ItemModel');
 const { OrderModel } = require('../models/OrderModel');
 const { FavouriteModel } = require('../models/FavouriteModel');
-const { createJwt, validateJwt } = require('./auth');
+const { createJwt } = require('./auth');
 const { databaseConnect, databaseClear, databaseClose } = require('./database');
 const bcrypt = require('bcryptjs');
 
@@ -50,10 +50,10 @@ async function seedUsers() {
 
 async function seedCategories() {
     const categories = [
+        { name: "coffee"},
+        { name: "tea" },
         { name: "milkshake" },
         { name: "food" },
-        { name: "coffee"},
-        { name: "tea" }
     ];
 
     console.log("Seeding categories...");
@@ -427,7 +427,6 @@ async function seed(){
     newUsers.forEach(user => {
         let newJwt = createJwt(user);
         console.log(`New JWT for ${user.name}:\n ${newJwt}`);
-        validateJwt(newJwt);
     }); 
 
     console.log("Data seeded successfully!");
