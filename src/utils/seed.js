@@ -50,10 +50,10 @@ async function seedUsers() {
 
 async function seedCategories() {
     const categories = [
-        { name: "coffee"},
-        { name: "tea" },
         { name: "milkshake" },
-        { name: "food" }
+        { name: "food" },
+        { name: "coffee"},
+        { name: "tea" }
     ];
 
     console.log("Seeding categories...");
