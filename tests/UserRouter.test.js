@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const { app } = require('../src/server');
 const { UserModel } = require('../src/models/UserModel');
 const { createJwt } = require('../src/utils/auth');
+const { JsonWebTokenError } = require('jsonwebtoken');
 
 
 beforeAll(async () => {
@@ -90,6 +91,23 @@ describe('User Routes', () => {
                 });
             expect(response.statusCode).toEqual(400);
             expect(response.body.message).toBe("A profile with this email already exists.");
+        });
+
+        it('should return a 500 status when an error occurs', async () => {
+            jest.spyOn(UserModel.prototype, 'save').mockImplementationOnce(() => {
+                throw new Error('Test Error');
+            });
+
+            const response = await request(app)
+                .post("/users/signup")
+                .send({
+                    email: "erroruser@test.com",
+                    password: "password",
+                    name: "Error Test User",
+                });
+            expect(response.status).toBe(500);
+            expect(response.body).toHaveProperty("message", "Error Occured!");
+            expect(response.body).toHaveProperty("error", "Test Error");
         });
     });
 
