@@ -231,7 +231,7 @@ router.patch(
 
 
 // Route to update an existing category
-// eg. PATCH localhost:3001/menu/updateCategory/669fb799d22cf89ef1ba330c/
+// eg. PATCH localhost:3001/menu/update/category/669fb799d22cf89ef1ba330c/
 router.patch(
     "/update/category/:id",
     validateObjectId,

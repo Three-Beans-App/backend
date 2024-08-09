@@ -125,6 +125,47 @@ Nodemon is a utility for Node.js that automatically restarts a Node.js applicati
 In our application, Nodemon was used for hot reloading during the development process.
 
 
+## Source Control Flow
+To make the development process more organised, we created multiple feature branches with regular commits and pull requests to track progress and delegate tasks:
+![github screenshot](./documents/Screenshot%202024-08-09%20225920.png)
+
+
+## API Endpoints 
+
+### Users
+ - POST /users/signup/
+ - POST /users/login/
+ - GET /users/
+ - PATCH /users/update/
+ - DELETE /users/delete/
+
+ ### Menu
+- POST /menu/create/item/
+- POST /menu/create/category/
+- GET /menu/items/
+- GET /menu/categories/
+- GET /menu/item/:id
+- GET /menu/category/:id
+- PATCH /menu/update/item/:id
+- PATCH /menu/update/category/:id
+- DELETE /menu/delete/item/:id
+- DELETE /menu/delete/category/:id
+
+### Orders
+- POST /orders/
+- GET /orders/user/:id
+- GET /orders/
+- GET /orders/status/:status
+- GET /orders/active/
+- PATCH /orders/status/:id
+- DELETE /orders/delete/:id
+
+### Favourites
+- POST /favourites/
+- GET /favourites/:id
+- PATCH /favourites/:id
+- DELETE /favourites/:id
+
 
 
 
